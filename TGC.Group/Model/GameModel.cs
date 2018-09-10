@@ -6,6 +6,7 @@ using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Terrain;
+using TGC.Group.Model.Utils;
 
 namespace TGC.Group.Model
 {
@@ -24,22 +25,28 @@ namespace TGC.Group.Model
         /// <param name="mediaDir">Ruta donde esta la carpeta con los assets</param>
         /// <param name="shadersDir">Ruta donde esta la carpeta con los shaders</param>
 
-        /* Estos 4 atributos no dseberian estar en la Clase GameModel, refactorizar!! */ 
-        private bool saltando;
-        private int direccionSalto = 1;
+        /* Atributos */
+        // Estos 4 atributos no dseberian estar en la Clase GameModel, refactorizar!!
+        public bool isJumping;
+        public int jumpDirection = 1;
         private float posInicialBandicoot;
         private float alturaMaximaSalto = 20f;
 
         private const float MOVEMENT_SPEED = 100f;
+        private InputHandler Handler { get; set; }
+        public bool BoundingBox { get; set; }
         private TgcMesh Bandicoot { get; set; } 
-        private bool BoundingBox { get; set; }
         private TgcSimpleTerrain terrain;
+        public TGCVector3 bandicootMovement;
 
+        /* Metodos */
+        // Constructor
         public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
             Category = Game.Default.Category;
             Name = Game.Default.Name;
             Description = Game.Default.Description;
+            Handler = new InputHandler(this);
         }
 
         public void InitTerrain()
@@ -47,8 +54,8 @@ namespace TGC.Group.Model
             string heightmapPath = $"{MediaDir}\\Heightmap\\hawai.jpg";
             string texturePath = $"{MediaDir}\\Textures\\TerrainTextureHawaii.jpg";
             var center = new TGCVector3(0f, 0f, 0f);
-            float scaleXZ = 50f;
-            float scaleY = 5f;
+            float scaleXZ = 100f;
+            float scaleY = 50f;
 
             terrain = new TgcSimpleTerrain();
             terrain.loadHeightmap(heightmapPath, scaleXZ, scaleY, center);
@@ -81,11 +88,20 @@ namespace TGC.Group.Model
 
             Camara.SetCamera(postition, lookAt);
         }
-        
+
+        public void ListenInputs () { 
+            Handler.HandleInput(Key.F);
+            Handler.HandleInput(Key.Left);
+            Handler.HandleInput(Key.Right);
+            Handler.HandleInput(Key.Up);
+            Handler.HandleInput(Key.Down);
+            Handler.HandleInput(Key.Space);
+        }
 
         /// <summary>
         ///     Escribir aquí todo el código de inicialización: cargar modelos, texturas, 
-        ///     estructuras de optimización y todo procesamiento que podemos pre calcular para nuestro juego.
+        ///     estructuras de optimización y todo procesamiento 
+        ///     que podemos pre calcular para nuestro juego.
         /// </summary>
         public override void Init()
         {
@@ -107,69 +123,37 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
-
-            // Capturar Input teclado utilizado para movimiento 
+           
             var anguloCamara = TGCVector3.Empty;
-            var movimiento = TGCVector3.Empty;
 
-            if (Input.keyPressed(Key.F))
-            {
-                BoundingBox = !BoundingBox;
-            }
-
-            // movimiento lateral
-            if (Input.keyDown(Key.Left) || Input.keyDown(Key.A))
-            {
-                movimiento.X = 1;
-            }
-            else if (Input.keyDown(Key.Right) || Input.keyDown(Key.D))
-            {
-                movimiento.X = -1;
-            }
-
-            //Movernos adelante y atras, sobre el eje Z.
-            if (Input.keyDown(Key.Up) || Input.keyDown(Key.W))
-            {
-                movimiento.Z = -1;
-            }
-            else if (Input.keyDown(Key.Down) || Input.keyDown(Key.S))
-            {
-                movimiento.Z = 1;
-            }
-
-            //salto
-            if (Input.keyPressed(Key.Space) && !saltando)
-            {
-                saltando = true;
-                direccionSalto = 1;
-            }
+            ListenInputs();
 
             //Posicion original del mesh principal (o sea del bandicoot)
             var originalPos = Bandicoot.Position;
             anguloCamara = Bandicoot.Position;
 
             //Multiplicar movimiento por velocidad y elapsedTime
-            movimiento *= MOVEMENT_SPEED * ElapsedTime;
+            bandicootMovement *= MOVEMENT_SPEED * ElapsedTime;
 
-            Bandicoot.Move(movimiento);
-            if (saltando)
+            Bandicoot.Move(bandicootMovement);
+            if (isJumping)
             {
-                Bandicoot.Move(0, direccionSalto * MOVEMENT_SPEED * ElapsedTime, 0);
+                Bandicoot.Move(0, jumpDirection * MOVEMENT_SPEED * ElapsedTime, 0);
 
                 //Si la posicion en Y es mayor a la maxima altura. 
                 if (Bandicoot.Position.Y > alturaMaximaSalto)
                 {
-                    direccionSalto = -1;
+                    jumpDirection = -1;
                 }
 
                 if (Bandicoot.Position.Y <= posInicialBandicoot)
                 {
-                    saltando = false;
+                    isJumping = false;
                 }
             }
 
             //Desplazar camara para seguir al personaje
-            Camara.SetCamera(Camara.Position + new TGCVector3(movimiento), anguloCamara);
+            Camara.SetCamera(Camara.Position + new TGCVector3(bandicootMovement), anguloCamara);
 
             //Capturar Input Mouse
             if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
