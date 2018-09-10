@@ -51,7 +51,7 @@ namespace TGC.Group.Form
             InitGraphics();
 
             //Titulo de la ventana principal.
-            Text = Modelo.Name + " - " + Modelo.Description;
+            Text = "CDLG - Crash Bandicoot";
 
             //Focus panel3D.
             panel3D.Focus();
@@ -94,11 +94,11 @@ namespace TGC.Group.Form
             TgcShaders.Instance.loadCommonShaders(currentDirectory + Game.Default.ShadersDirectory);
 
             //Juego a ejecutar, si quisiéramos tener diferentes modelos aquí podemos cambiar la instancia e invocar a otra clase.
-            Modelo = new GameModel(currentDirectory + Game.Default.MediaDirectory,
-                currentDirectory + Game.Default.ShadersDirectory);
+            //Modelo = new GameModel(currentDirectory + Game.Default.MediaDirectory,
+            //    currentDirectory + Game.Default.ShadersDirectory);
 
             //Cargar juego.
-            ExecuteModel();
+            //ExecuteModel();
         }
 
         /// <summary>
@@ -196,5 +196,33 @@ namespace TGC.Group.Form
             D3DDevice.Instance.Dispose();
             TexturesPool.Instance.clearAll();
         }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            var currentDirectory = Environment.CurrentDirectory + "\\";
+
+            Modelo = new GameModel(currentDirectory + Game.Default.MediaDirectory,
+               currentDirectory + Game.Default.ShadersDirectory);
+
+            ExecuteModel();
+
+            button1.Hide();
+            button2.Hide();
+
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            var currentDirectory = Environment.CurrentDirectory + "\\";
+
+            Modelo = new GameModelIsla(currentDirectory + Game.Default.MediaDirectory,
+                 currentDirectory + Game.Default.ShadersDirectory);
+
+            ExecuteModel();
+
+            button1.Hide();
+            button2.Hide();
+        }
+
     }
 }
