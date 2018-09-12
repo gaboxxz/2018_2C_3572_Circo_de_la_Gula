@@ -4,9 +4,9 @@ namespace TGC.Group.Model.Utils
 {
     class ShowBoundingBoxCommand : Command
     {
-        private GameModel model;
+        private GameModelCanyon model;
 
-        public ShowBoundingBoxCommand(GameModel model)
+        public ShowBoundingBoxCommand(GameModelCanyon model)
         {
             this.model = model;
         }

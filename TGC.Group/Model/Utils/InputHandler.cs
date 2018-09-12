@@ -13,7 +13,7 @@ namespace TGC.Group.Model.Utils
         private Dictionary<Key, Command> commands = new Dictionary<Key, Command>();
 
         // Utiliza el modelo y bindea un comando a un evento.
-        public InputHandler(GameModel model) {
+        public InputHandler(GameModelCanyon model) {
             commands[Key.F] = new ShowBoundingBoxCommand(model);
             commands[Key.Left] = new MoveLeftCommand(model);
             commands[Key.Right] = new MoveRightCommand(model);

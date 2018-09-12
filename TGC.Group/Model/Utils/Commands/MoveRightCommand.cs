@@ -4,9 +4,9 @@ namespace TGC.Group.Model.Utils.Commands
 {
     class MoveRightCommand : Command
     {
-        private GameModel model;
+        private GameModelCanyon model;
 
-        public MoveRightCommand(GameModel model)
+        public MoveRightCommand(GameModelCanyon model)
         {
             this.model = model;
         }

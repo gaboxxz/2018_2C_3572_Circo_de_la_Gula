@@ -4,9 +4,9 @@ namespace TGC.Group.Model.Utils.Commands
 {
     class JumpCommand : Command
     {
-        private GameModel model;
+        private GameModelCanyon model;
 
-        public JumpCommand(GameModel model)
+        public JumpCommand(GameModelCanyon model)
         {
             this.model = model;
         }

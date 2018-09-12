@@ -29,41 +29,41 @@
         private void InitializeComponent()
         {
             this.panel3D = new System.Windows.Forms.Panel();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonIsland = new System.Windows.Forms.Button();
+            this.buttonCanyon = new System.Windows.Forms.Button();
             this.panel3D.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel3D
             // 
             this.panel3D.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.panel3D.Controls.Add(this.button2);
-            this.panel3D.Controls.Add(this.button1);
+            this.panel3D.Controls.Add(this.buttonIsland);
+            this.panel3D.Controls.Add(this.buttonCanyon);
             this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3D.Location = new System.Drawing.Point(0, 0);
             this.panel3D.Name = "panel3D";
             this.panel3D.Size = new System.Drawing.Size(784, 561);
             this.panel3D.TabIndex = 0;
             // 
-            // button2
+            // buttonIsland
             // 
-            this.button2.Location = new System.Drawing.Point(466, 274);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(196, 47);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Nivel &Isla";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.Button2_Click);
+            this.buttonIsland.Location = new System.Drawing.Point(466, 274);
+            this.buttonIsland.Name = "buttonIsland";
+            this.buttonIsland.Size = new System.Drawing.Size(196, 47);
+            this.buttonIsland.TabIndex = 1;
+            this.buttonIsland.Text = "Nivel &Isla";
+            this.buttonIsland.UseVisualStyleBackColor = true;
+            this.buttonIsland.Click += new System.EventHandler(this.ButtonIsland_Click);
             // 
-            // button1
+            // buttonCanyon
             // 
-            this.button1.Location = new System.Drawing.Point(466, 185);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(194, 50);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Nivel &Cañon";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            this.buttonCanyon.Location = new System.Drawing.Point(466, 185);
+            this.buttonCanyon.Name = "buttonCanyon";
+            this.buttonCanyon.Size = new System.Drawing.Size(194, 50);
+            this.buttonCanyon.TabIndex = 0;
+            this.buttonCanyon.Text = "Nivel &Cañon";
+            this.buttonCanyon.UseVisualStyleBackColor = true;
+            this.buttonCanyon.Click += new System.EventHandler(this.ButtonCanyon_Click);
             // 
             // GameForm
             // 
@@ -85,8 +85,8 @@
         #endregion
 
         private System.Windows.Forms.Panel panel3D;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonIsland;
+        private System.Windows.Forms.Button buttonCanyon;
     }
 }
 

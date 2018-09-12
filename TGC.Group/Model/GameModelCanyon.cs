@@ -6,36 +6,55 @@ using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Terrain;
+using TGC.Group.Model.Utils;
 
 namespace TGC.Group.Model
 {
-    public class GameModelIsla : TgcExample
+    /// <summary>
+    ///     Ejemplo para implementar el TP.
+    ///     Inicialmente puede ser renombrado o copiado para hacer m·s ejemplos chicos, 
+    ///     en el caso de copiar para que se ejecute el nuevo ejemplo deben cambiar el modelo 
+    ///     que instancia GameForm <see cref="Form.GameForm.InitGraphics()" />
+    ///     line 97.
+    /// </summary>
+    public class GameModelCanyon : TgcExample
     {
-        /* Estos 4 atributos no dseberian estar en la Clase GameModel, refactorizar!! */
-        private bool saltando;
-        private int direccionSalto = 1;
+        /// <summary>
+        ///     Constructor del juego.
+        /// </summary>
+        /// <param name="mediaDir">Ruta donde esta la carpeta con los assets</param>
+        /// <param name="shadersDir">Ruta donde esta la carpeta con los shaders</param>
+
+        /* Atributos */
+        public bool isJumping;
+        public int jumpDirection = 1;
         private float posInicialBandicoot;
-        private const float alturaMaximaSalto = 20f;
+        private float alturaMaximaSalto = 20f;
 
         private const float MOVEMENT_SPEED = 100f;
-        private TgcMesh Bandicoot { get; set; }
-        private bool BoundingBox { get; set; }
+        private InputHandler Handler { get; set; }
+        public bool BoundingBox { get; set; }
+        private TgcMesh Bandicoot { get; set; } 
         private TgcSimpleTerrain terrain;
+        public TGCVector3 bandicootMovement;
 
-        public GameModelIsla(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
+        /* Metodos */
+        // Constructor
+        public GameModelCanyon(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
             Category = Game.Default.Category;
             Name = Game.Default.Name;
             Description = Game.Default.Description;
+            Handler = new InputHandler(this);
         }
 
         public void InitTerrain()
         {
             string heightmapPath = $"{MediaDir}\\Heightmap\\hawai.jpg";
             string texturePath = $"{MediaDir}\\Textures\\TerrainTextureHawaii.jpg";
-            var center = new TGCVector3(-22f, 0f, 0f);
-            float scaleXZ = 50f;
-            float scaleY = 5f;
+            var center = new TGCVector3(0f, 0f, 0f);
+            float scaleXZ = 100f;
+            float scaleY = 50f;
 
             terrain = new TgcSimpleTerrain();
             terrain.loadHeightmap(heightmapPath, scaleXZ, scaleY, center);
@@ -58,10 +77,10 @@ namespace TGC.Group.Model
         public void InitCamera()
         {
             /* Suelen utilizarse objetos que manejan el comportamiento de la camara.
-               Lo que en realidad necesitamos gr√°ficamente es una matriz de View.
-               El framework maneja una c√°mara est√°tica, pero debe ser inicializada.
+               Lo que en realidad necesitamos gr·ficamente es una matriz de View.
+               El framework maneja una c·mara est·tica, pero debe ser inicializada.
                Internamente el framework construye la matriz de view con estos dos vectores.
-               Luego en nuestro juego tendremos que crear una c√°mara que cambie 
+               Luego en nuestro juego tendremos que crear una c·mara que cambie 
                la matriz de view con variables como movimientos o animaciones de escenas. */
             var postition = new TGCVector3(-5, 20, 50);
             var lookAt = Bandicoot.Position;
@@ -69,10 +88,19 @@ namespace TGC.Group.Model
             Camara.SetCamera(postition, lookAt);
         }
 
+        public void ListenInputs () { 
+            Handler.HandleInput(Key.F);
+            Handler.HandleInput(Key.Left);
+            Handler.HandleInput(Key.Right);
+            Handler.HandleInput(Key.Up);
+            Handler.HandleInput(Key.Down);
+            Handler.HandleInput(Key.Space);
+        }
 
         /// <summary>
-        ///     Escribir aqu√≠ todo el c√≥digo de inicializaci√≥n: cargar modelos, texturas, 
-        ///     estructuras de optimizaci√≥n y todo procesamiento que podemos pre calcular para nuestro juego.
+        ///     Escribir aquÌ todo el cÛdigo de inicializaciÛn: cargar modelos, texturas, 
+        ///     estructuras de optimizaciÛn y todo procesamiento 
+        ///     que podemos pre calcular para nuestro juego.
         /// </summary>
         public override void Init()
         {
@@ -88,85 +116,53 @@ namespace TGC.Group.Model
 
         /// <summary>
         ///     Se llama en cada frame.
-        ///     Se debe escribir toda la l√≥gica de computo del modelo,
-        ///     as√≠ como tambi√©n verificar entradas del usuario y reacciones ante ellas.
+        ///     Se debe escribir toda la lÛgica de computo del modelo,
+        ///     asÌ como tambiÈn verificar entradas del usuario y reacciones ante ellas.
         /// </summary>
         public override void Update()
         {
             PreUpdate();
-
-            // Capturar Input teclado utilizado para movimiento 
+           
             var anguloCamara = TGCVector3.Empty;
-            var movimiento = TGCVector3.Empty;
 
-            if (Input.keyPressed(Key.F))
-            {
-                BoundingBox = !BoundingBox;
-            }
-
-            // movimiento lateral
-            if (Input.keyDown(Key.Left) || Input.keyDown(Key.A))
-            {
-                movimiento.X = 1;
-            }
-            else if (Input.keyDown(Key.Right) || Input.keyDown(Key.D))
-            {
-                movimiento.X = -1;
-            }
-
-            //Movernos adelante y atras, sobre el eje Z.
-            if (Input.keyDown(Key.Up) || Input.keyDown(Key.W))
-            {
-                movimiento.Z = -1;
-            }
-            else if (Input.keyDown(Key.Down) || Input.keyDown(Key.S))
-            {
-                movimiento.Z = 1;
-            }
-
-            //salto
-            if (Input.keyPressed(Key.Space) && !saltando)
-            {
-                saltando = true;
-                direccionSalto = 1;
-            }
+            ListenInputs();
 
             //Posicion original del mesh principal (o sea del bandicoot)
             var originalPos = Bandicoot.Position;
             anguloCamara = Bandicoot.Position;
 
             //Multiplicar movimiento por velocidad y elapsedTime
-            movimiento *= MOVEMENT_SPEED * ElapsedTime;
+            bandicootMovement *= MOVEMENT_SPEED * ElapsedTime;
 
-            Bandicoot.Move(movimiento);
-            if (saltando)
+            Bandicoot.Move(bandicootMovement);
+            if (isJumping)
             {
-                Bandicoot.Move(0, direccionSalto * MOVEMENT_SPEED * ElapsedTime, 0);
+                Bandicoot.Move(0, jumpDirection * MOVEMENT_SPEED * ElapsedTime, 0);
 
                 //Si la posicion en Y es mayor a la maxima altura. 
                 if (Bandicoot.Position.Y > alturaMaximaSalto)
                 {
-                    direccionSalto = -1;
+                    jumpDirection = -1;
                 }
 
                 if (Bandicoot.Position.Y <= posInicialBandicoot)
                 {
-                    saltando = false;
+                    isJumping = false;
                 }
             }
 
             //Desplazar camara para seguir al personaje
-            Camara.SetCamera((Camara.Position + movimiento), anguloCamara);
+            Camara.SetCamera(Camara.Position + new TGCVector3(bandicootMovement), anguloCamara);
 
             //Capturar Input Mouse
             if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
             {
-                //Como ejemplo podemos hacer un movimiento simple de la c√°mara.
+                //Como ejemplo podemos hacer un movimiento simple de la c·mara.
                 //En este caso le sumamos un valor en Y
                 Camara.SetCamera(Camara.Position + new TGCVector3(0, 10f, 0), Camara.LookAt);
-                //Ver ejemplos de c√°mara para otras operaciones posibles.
+                //Ver ejemplos de c·mara para otras operaciones posibles.
 
-                //Si superamos cierto Y volvemos a la posici√≥n original.
+                //Si superamos cierto Y volvemos a la posiciÛn original.
                 if (Camara.Position.Y > 300f)
                 {
                     Camara.SetCamera(new TGCVector3(Camara.Position.X, 0f, Camara.Position.Z), Camara.LookAt);
@@ -190,12 +186,12 @@ namespace TGC.Group.Model
 
         /// <summary>
         ///     Se llama cada vez que hay que refrescar la pantalla.
-        ///     Escribir aqu√≠ todo el c√≥digo referido al renderizado.
+        ///     Escribir aquÌ todo el cÛdigo referido al renderizado.
         ///     Borrar todo lo que no haga falta.
         /// </summary>
         public override void Render()
         {
-            //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones seg√∫n nuestra conveniencia.
+            //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones seg˙n nuestra conveniencia.
             PreRender();
 
             //Dibuja un texto por pantalla
@@ -204,8 +200,8 @@ namespace TGC.Group.Model
 
             terrain.Render();
 
-            // Cuando tenemos modelos mesh podemos utilizar un m√©todo que hace la matriz de transformaci√≥n est√°ndar.
-            // Es √∫til cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jer√°rquicas o complicadas.
+            // Cuando tenemos modelos mesh podemos utilizar un mÈtodo que hace la matriz de transformaciÛn est·ndar.
+            // Es ˙til cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jer·rquicas o complicadas.
             Bandicoot.UpdateMeshTransform();
             Bandicoot.Render();
 
@@ -220,7 +216,7 @@ namespace TGC.Group.Model
         }
 
         /// <summary>
-        ///     Es muy importante liberar los recursos, sobretodo los gr√°ficos
+        ///     Es muy importante liberar los recursos, sobretodo los gr·ficos
         ///     ya que quedan bloqueados en el device de video.
         /// </summary>
         public override void Dispose()

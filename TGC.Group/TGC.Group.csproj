@@ -85,7 +85,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Game.settings</DependentUpon>
     </Compile>
-    <Compile Include="Model\GameModel.cs" />
+    <Compile Include="Model\GameModelCanyon.cs" />
+    <Compile Include="Model\GameModelIsla.cs" />
     <Compile Include="Model\Utils\Commands\JumpCommand.cs" />
     <Compile Include="Model\Utils\Commands\MoveDownCommand.cs" />
     <Compile Include="Model\Utils\Commands\MoveUpCommand.cs" />

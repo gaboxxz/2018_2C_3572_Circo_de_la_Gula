@@ -28,7 +28,7 @@ namespace TGC.Group.Form
         /// <summary>
         ///     Ejemplo del juego a correr
         /// </summary>
-        private TgcExample Modelo { get; set; }
+        private TgcExample Model { get; set; }
 
         /// <summary>
         ///     Obtener o parar el estado del RenderLoop.
@@ -94,7 +94,7 @@ namespace TGC.Group.Form
             TgcShaders.Instance.loadCommonShaders(currentDirectory + Game.Default.ShadersDirectory);
 
             //Juego a ejecutar, si quisiéramos tener diferentes modelos aquí podemos cambiar la instancia e invocar a otra clase.
-            //Modelo = new GameModel(currentDirectory + Game.Default.MediaDirectory,
+            //Model = new GameModel(currentDirectory + Game.Default.MediaDirectory,
             //    currentDirectory + Game.Default.ShadersDirectory);
 
             //Cargar juego.
@@ -109,13 +109,13 @@ namespace TGC.Group.Form
             while (ApplicationRunning)
             {
                 //Renderizo si es que hay un ejemplo activo.
-                if (Modelo != null)
+                if (Model != null)
                 {
                     //Solo renderizamos si la aplicacion tiene foco, para no consumir recursos innecesarios.
                     if (ApplicationActive())
                     {
-                        Modelo.Update();
-                        Modelo.Render();
+                        Model.Update();
+                        Model.Render();
                     }
                     else
                     {
@@ -159,10 +159,10 @@ namespace TGC.Group.Form
             //Ejecutar Init
             try
             {
-                Modelo.ResetDefaultConfig();
-                Modelo.DirectSound = DirectSound;
-                Modelo.Input = Input;
-                Modelo.Init();
+                Model.ResetDefaultConfig();
+                Model.DirectSound = DirectSound;
+                Model.Input = Input;
+                Model.Init();
                 panel3D.Focus();
             }
             catch (Exception e)
@@ -176,10 +176,10 @@ namespace TGC.Group.Form
         /// </summary>
         public void StopCurrentExample()
         {
-            if (Modelo != null)
+            if (Model != null)
             {
-                Modelo.Dispose();
-                Modelo = null;
+                Model.Dispose();
+                Model = null;
             }
         }
 
@@ -197,32 +197,28 @@ namespace TGC.Group.Form
             TexturesPool.Instance.clearAll();
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void ButtonCanyon_Click(object sender, EventArgs e)
         {
-            var currentDirectory = Environment.CurrentDirectory + "\\";
+            string mediaDir = $"{Environment.CurrentDirectory}\\{Game.Default.MediaDirectory}";
+            string shadersDir = $"{Environment.CurrentDirectory}\\{Game.Default.ShadersDirectory}";
 
-            Modelo = new GameModel(currentDirectory + Game.Default.MediaDirectory,
-               currentDirectory + Game.Default.ShadersDirectory);
-
+            Model = new GameModelCanyon(mediaDir, shadersDir);
             ExecuteModel();
 
-            button1.Hide();
-            button2.Hide();
-
+            buttonCanyon.Hide();
+            buttonIsland.Hide();
         }
 
-        private void Button2_Click(object sender, EventArgs e)
+        private void ButtonIsland_Click(object sender, EventArgs e)
         {
-            var currentDirectory = Environment.CurrentDirectory + "\\";
+            string mediaDir = $"{Environment.CurrentDirectory}\\{Game.Default.MediaDirectory}";
+            string shadersDir = $"{Environment.CurrentDirectory}\\{Game.Default.ShadersDirectory}";
 
-            Modelo = new GameModelIsla(currentDirectory + Game.Default.MediaDirectory,
-                 currentDirectory + Game.Default.ShadersDirectory);
-
+            Model = new GameModelCanyon(mediaDir, shadersDir);
             ExecuteModel();
 
-            button1.Hide();
-            button2.Hide();
+            buttonCanyon.Hide();
+            buttonIsland.Hide();
         }
-
     }
 }

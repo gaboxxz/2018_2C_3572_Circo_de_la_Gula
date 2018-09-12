@@ -4,9 +4,9 @@ namespace TGC.Group.Model.Utils.Commands
 {
     class MoveUpCommand : Command
     {
-        private GameModel model;
+        private GameModelCanyon model;
 
-        public MoveUpCommand(GameModel model)
+        public MoveUpCommand(GameModelCanyon model)
         {
             this.model = model;
         }
