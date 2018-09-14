@@ -1,5 +1,6 @@
 using Microsoft.DirectX.DirectInput;
 using System.Drawing;
+using TGC.Core.Collision;
 using TGC.Core.Direct3D;
 using TGC.Core.Example;
 using TGC.Core.Input;
@@ -37,6 +38,9 @@ namespace TGC.Group.Model
         private TgcMesh Bandicoot { get; set; } 
         private TgcSimpleTerrain terrain;
         public TGCVector3 bandicootMovement;
+
+        public TgcScene Scene { get; set; }
+
 
         /* Metodos */
         // Constructor
@@ -179,7 +183,35 @@ namespace TGC.Group.Model
                 {
                     Camara.SetCamera(new TGCVector3(Camara.Position.X, 0f, Camara.Position.Z), Camara.LookAt);
                 }
+
+
             }
+            
+            
+
+            /*  COLISION *//*
+             *  Gracias al namespace TGC.Core.Collision
+             * Siendo la escena el conjunto de meshes, perteneciente a la clase TGCScene
+             * se puede usar la funcion booleana TgcCollisionUtils.testAABBAABB(aabb1, aabb2)
+             * Si se tocan los AABB (Axis-Aligned Bounding Box), entonces colisionan, y cumple la funcion.
+             * Actualmente, en este caso contrarrestarian el movimiento, evitando que choquen y que queden pegados.
+            */
+
+
+            //No hay escena cargada, por lo tanto lo dejo comentado 
+
+            /*
+            foreach (var mesh in Scene.Meshes)
+            {
+                if (TgcCollisionUtils.testAABBAABB(mesh.BoundingBox, Bandicoot.BoundingBox))
+                {
+                    Bandicoot.Move(-bandicootMovement);
+                }
+            }
+            */
+
+
+            PostUpdate();
 
             PostUpdate();
         }
