@@ -214,7 +214,7 @@ namespace TGC.Group.Form
             string mediaDir = $"{Environment.CurrentDirectory}\\{Game.Default.MediaDirectory}";
             string shadersDir = $"{Environment.CurrentDirectory}\\{Game.Default.ShadersDirectory}";
 
-            Model = new GameModelCanyon(mediaDir, shadersDir);
+            Model = new GameModelIsla(mediaDir, shadersDir);
             ExecuteModel();
 
             buttonCanyon.Hide();

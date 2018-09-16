@@ -1,29 +1,39 @@
 using Microsoft.DirectX.DirectInput;
+using System.Collections.Generic;
 using System.Drawing;
-using TGC.Core.Collision;
 using TGC.Core.Direct3D;
 using TGC.Core.Example;
 using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Terrain;
+using TGC.Core.Collision;
+using System;
+
 
 namespace TGC.Group.Model
 {
     public class GameModelIsla : TgcExample
     {
-        /* Estos 4 atributos no dseberian estar en la Clase GameModel, refactorizar!! */
+        /// <summary>
+        ///     Constructor del juego.
+        /// </summary>
+        /// <param name="mediaDir">Ruta donde esta la carpeta con los assets</param>
+        /// <param name="shadersDir">Ruta donde esta la carpeta con los shaders</param>
+
         private bool saltando;
         private int direccionSalto = 1;
         private float posInicialBandicoot;
-        private const float alturaMaximaSalto = 20f;
-
+        private const float alturaMaximaSalto = 70f;
         private const float MOVEMENT_SPEED = 100f;
+        private TgcSimpleTerrain terrain;
+
+        //pisos, paredes y otros meshes
+        private List<TgcMesh> Parte1 = new List<TgcMesh>();
+        private List<TgcMesh> Parte2 = new List<TgcMesh>();
+
         private TgcMesh Bandicoot { get; set; }
         private bool BoundingBox { get; set; }
-        private TgcSimpleTerrain terrain;
-        public TgcScene Scene { get; set; }
-
 
         public GameModelIsla(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
@@ -53,22 +63,24 @@ namespace TGC.Group.Model
             var pMax = new TGCVector3(-185f, 225f, -100f);
 
             Bandicoot = sceneLoader.loadSceneFromFile(path).Meshes[0];
-            Bandicoot.Scale = new TGCVector3(0.05f, 0.05f, 0.05f);
+            Bandicoot.Scale = new TGCVector3(0.15f, 0.15f, 0.15f);
             Bandicoot.RotateY(3.12f);
             Bandicoot.BoundingBox.setExtremes(pMin, pMax);
+            Bandicoot.Move(0, 1, 830);
+
+            Parte1 = sceneLoader.loadSceneFromFile($"{MediaDir}/Nivel1-1-TgcScene.xml").Meshes;
+            Parte2 = sceneLoader.loadSceneFromFile($"{MediaDir}/Nivel1-2-TgcScene.xml").Meshes;
+
+            foreach (TgcMesh Item in Parte2)
+            {
+                Item.Move(0, 0, -1090f);
+            }
         }
 
         public void InitCamera()
         {
-            /* Suelen utilizarse objetos que manejan el comportamiento de la camara.
-               Lo que en realidad necesitamos gráficamente es una matriz de View.
-               El framework maneja una cámara estática, pero debe ser inicializada.
-               Internamente el framework construye la matriz de view con estos dos vectores.
-               Luego en nuestro juego tendremos que crear una cámara que cambie 
-               la matriz de view con variables como movimientos o animaciones de escenas. */
-            var postition = new TGCVector3(-5, 20, 50);
-            var lookAt = Bandicoot.Position;
-
+            var postition = Bandicoot.Position + (new TGCVector3(0, 100, 120));
+            var lookAt = Bandicoot.Position + new TGCVector3(0, 10, 0);
             Camara.SetCamera(postition, lookAt);
         }
 
@@ -142,6 +154,7 @@ namespace TGC.Group.Model
             movimiento *= MOVEMENT_SPEED * ElapsedTime;
 
             Bandicoot.Move(movimiento);
+
             if (saltando)
             {
                 Bandicoot.Move(0, direccionSalto * MOVEMENT_SPEED * ElapsedTime, 0);
@@ -155,6 +168,15 @@ namespace TGC.Group.Model
                 if (Bandicoot.Position.Y <= posInicialBandicoot)
                 {
                     saltando = false;
+                }
+            }
+
+            foreach (TgcMesh mesh in Parte1)
+            {
+                if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.BoundingBox))
+                {
+                    Bandicoot.Move(-movimiento);
+                    Camara.SetCamera((Camara.Position - movimiento), anguloCamara);
                 }
             }
 
@@ -188,27 +210,6 @@ namespace TGC.Group.Model
                 }
             }
 
-            /*  COLISION *//*
-             *  Gracias al namespace TGC.Core.Collision
-             * Siendo la escena el conjunto de meshes, perteneciente a la clase TGCScene
-             * se puede usar la funcion booleana TgcCollisionUtils.testAABBAABB(aabb1, aabb2)
-             * Si se tocan los AABB (Axis-Aligned Bounding Box), entonces colisionan, y cumple la funcion.
-             * Actualmente, en este caso contrarrestarian el movimiento, evitando que choquen y que queden pegados.
-            */
-
-
-            //No hay escena cargada, por lo tanto lo dejo comentado 
-
-            /*
-            foreach (var mesh in Scene.Meshes)
-            {
-                if (TgcCollisionUtils.testAABBAABB(mesh.BoundingBox, Bandicoot.BoundingBox))
-                {
-                    Bandicoot.Move(-bandicootMovement);
-                }
-            }
-            */
-
             PostUpdate();
         }
 
@@ -225,17 +226,35 @@ namespace TGC.Group.Model
             //Dibuja un texto por pantalla
             DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText("Con clic izquierdo subimos la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
-
-            terrain.Render();
+            DrawText.drawText("La posicion del bandicoot es: " + TGCVector3.PrintVector3(Bandicoot.Position), 0, 40, Color.Black);
+            //terrain.Render();
 
             // Cuando tenemos modelos mesh podemos utilizar un método que hace la matriz de transformación estándar.
             // Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
             Bandicoot.UpdateMeshTransform();
             Bandicoot.Render();
+            foreach (TgcMesh item in Parte1)
+            {
+                item.Render();
+            }
+
+            foreach (TgcMesh item in Parte2)
+            {
+                item.Render();
+            }
 
             if (BoundingBox)
             {
                 Bandicoot.BoundingBox.Render();
+                foreach (TgcMesh item in Parte1)
+                {
+                    item.BoundingBox.Render();
+                }
+                foreach (TgcMesh item in Parte2)
+                {
+                    item.BoundingBox.Render();
+                }
+
             }
 
             // Finaliza el render y presenta en pantalla, al igual que el preRender se debe usar para casos 
