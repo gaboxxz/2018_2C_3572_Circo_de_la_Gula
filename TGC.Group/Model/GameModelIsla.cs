@@ -9,7 +9,7 @@ using TGC.Core.SceneLoader;
 using TGC.Core.Terrain;
 using TGC.Core.Collision;
 using System;
-
+using TGC.Core.Geometry;
 
 namespace TGC.Group.Model
 {
@@ -59,8 +59,8 @@ namespace TGC.Group.Model
         {
             var sceneLoader = new TgcSceneLoader();
             string path = $"{MediaDir}/crash/CRASH (2)-TgcScene.xml";
-            var pMin = new TGCVector3(0, 0, 0);
-            var pMax = new TGCVector3(-185f, 225f, -100f);
+            var pMin = new TGCVector3(-185f, 0, -100f);
+            var pMax = new TGCVector3(0, 225f, 0);
 
             Bandicoot = sceneLoader.loadSceneFromFile(path).Meshes[0];
             Bandicoot.Scale = new TGCVector3(0.15f, 0.15f, 0.15f);
@@ -75,6 +75,7 @@ namespace TGC.Group.Model
             {
                 Item.Move(0, 0, -1090f);
             }
+            
         }
 
         public void InitCamera()
@@ -113,6 +114,8 @@ namespace TGC.Group.Model
             // Capturar Input teclado utilizado para movimiento 
             var anguloCamara = TGCVector3.Empty;
             var movimiento = TGCVector3.Empty;
+
+            var lastPos = Bandicoot.Position;
 
             if (Input.keyPressed(Key.F))
             {
@@ -171,14 +174,31 @@ namespace TGC.Group.Model
                 }
             }
 
+            
+
             foreach (TgcMesh mesh in Parte1)
+            {
+                 if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.BoundingBox))
+                 {
+                   
+                    Bandicoot.Move(-movimiento);
+                     Camara.SetCamera((Camara.Position - movimiento), anguloCamara);
+                 }
+                 
+            }
+            foreach (TgcMesh mesh in Parte2)
             {
                 if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.BoundingBox))
                 {
+
                     Bandicoot.Move(-movimiento);
                     Camara.SetCamera((Camara.Position - movimiento), anguloCamara);
                 }
+
             }
+
+
+
 
             //Desplazar camara para seguir al personaje
             Camara.SetCamera((Camara.Position + movimiento), anguloCamara);
@@ -233,11 +253,12 @@ namespace TGC.Group.Model
             // Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
             Bandicoot.UpdateMeshTransform();
             Bandicoot.Render();
+
             foreach (TgcMesh item in Parte1)
             {
                 item.Render();
             }
-
+            
             foreach (TgcMesh item in Parte2)
             {
                 item.Render();
