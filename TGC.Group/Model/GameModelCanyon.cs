@@ -11,21 +11,8 @@ using TGC.Group.Model.Utils;
 
 namespace TGC.Group.Model
 {
-    /// <summary>
-    ///     Ejemplo para implementar el TP.
-    ///     Inicialmente puede ser renombrado o copiado para hacer más ejemplos chicos, 
-    ///     en el caso de copiar para que se ejecute el nuevo ejemplo deben cambiar el modelo 
-    ///     que instancia GameForm <see cref="Form.GameForm.InitGraphics()" />
-    ///     line 97.
-    /// </summary>
     public class GameModelCanyon : TgcExample
     {
-        /// <summary>
-        ///     Constructor del juego.
-        /// </summary>
-        /// <param name="mediaDir">Ruta donde esta la carpeta con los assets</param>
-        /// <param name="shadersDir">Ruta donde esta la carpeta con los shaders</param>
-
         /* Atributos */
         public bool isJumping;
         public int jumpDirection = 1;
@@ -33,14 +20,14 @@ namespace TGC.Group.Model
         private float alturaMaximaSalto = 20f;
 
         private const float MOVEMENT_SPEED = 100f;
-        private InputHandler Handler { get; set; }
-        public bool BoundingBox { get; set; }
-        private TgcMesh Bandicoot { get; set; } 
         private TgcSimpleTerrain terrain;
         public TGCVector3 bandicootMovement;
 
+        // Propiedades
+        private InputHandler Handler { get; set; }
+        public bool BoundingBox { get; set; }
+        private TgcMesh Bandicoot { get; set; } 
         public TgcScene Scene { get; set; }
-
 
         /* Metodos */
         // Constructor
@@ -54,11 +41,11 @@ namespace TGC.Group.Model
 
         public void InitTerrain()
         {
-            string heightmapPath = $"{MediaDir}\\Heightmap\\hawai.jpg";
-            string texturePath = $"{MediaDir}\\Textures\\TerrainTextureHawaii.jpg";
+            string heightmapPath = $"{MediaDir}\\Heightmaps\\canyon1.jpg";
+            string texturePath = $"{MediaDir}\\Textures\\pjrock16.jpg";
             var center = new TGCVector3(0f, 0f, 0f);
-            float scaleXZ = 100f;
-            float scaleY = 50f;
+            float scaleXZ = 15f;
+            float scaleY = 3f;
 
             terrain = new TgcSimpleTerrain();
             terrain.loadHeightmap(heightmapPath, scaleXZ, scaleY, center);
@@ -69,12 +56,12 @@ namespace TGC.Group.Model
         {
             var sceneLoader = new TgcSceneLoader();
             string path = $"{MediaDir}/crash/CRASH (2)-TgcScene.xml";
-            var pMin = new TGCVector3(0, 0, 0);
-            var pMax = new TGCVector3(-185f, 225f, -100f);
+            var pMin = new TGCVector3(-185f, 0, -100f);
+            var pMax = new TGCVector3(0, 225f, 0);
 
             Bandicoot = sceneLoader.loadSceneFromFile(path).Meshes[0];
             Bandicoot.Scale = new TGCVector3(0.05f, 0.05f, 0.05f);
-            Bandicoot.RotateY(3.12f);
+            Bandicoot.RotateY(3.12f); // NO HAY QUE USAR ESTE METODO PORQUE HACE CALCULOS sen(x) y cos(x)
             Bandicoot.BoundingBox.setExtremes(pMin, pMax);
         }
 
@@ -117,12 +104,7 @@ namespace TGC.Group.Model
 
             posInicialBandicoot = Bandicoot.Position.Y;
         }
-
-        /// <summary>
-        ///     Se llama en cada frame.
-        ///     Se debe escribir toda la lógica de computo del modelo,
-        ///     así como también verificar entradas del usuario y reacciones ante ellas.
-        /// </summary>
+        
         public override void Update()
         {
             PreUpdate();
@@ -158,50 +140,21 @@ namespace TGC.Group.Model
             //Desplazar camara para seguir al personaje
             Camara.SetCamera(Camara.Position + new TGCVector3(bandicootMovement), anguloCamara);
 
-            //Capturar Input Mouse
             if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
             {
-                //Como ejemplo podemos hacer un movimiento simple de la cámara.
-                //En este caso le sumamos un valor en Y
                 Camara.SetCamera(Camara.Position + new TGCVector3(0, 10f, 0), Camara.LookAt);
-                //Ver ejemplos de cámara para otras operaciones posibles.
-
-                //Si superamos cierto Y volvemos a la posición original.
-                if (Camara.Position.Y > 300f)
-                {
-                    Camara.SetCamera(new TGCVector3(Camara.Position.X, 0f, Camara.Position.Z), Camara.LookAt);
-                }
             }
 
             if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_RIGHT))
             {
-                //Pruebo si baja camara
                 Camara.SetCamera(Camara.Position + new TGCVector3(0, -10f, 0), Camara.LookAt);
-
-                //igual que si sube a cierta altura reinicio camara
-                if (Camara.Position.Y < -200f)
-                {
-                    Camara.SetCamera(new TGCVector3(Camara.Position.X, 0f, Camara.Position.Z), Camara.LookAt);
-                }
-
-
             }
+
+
+
+            //TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, me);
             
-            
-
-            /*  COLISION *//*
-             *  Gracias al namespace TGC.Core.Collision
-             * Siendo la escena el conjunto de meshes, perteneciente a la clase TGCScene
-             * se puede usar la funcion booleana TgcCollisionUtils.testAABBAABB(aabb1, aabb2)
-             * Si se tocan los AABB (Axis-Aligned Bounding Box), entonces colisionan, y cumple la funcion.
-             * Actualmente, en este caso contrarrestarian el movimiento, evitando que choquen y que queden pegados.
-            */
-
-
-            //No hay escena cargada, por lo tanto lo dejo comentado 
-
-            /*
-            foreach (var mesh in Scene.Meshes)
+            /*foreach (var mesh in Scene.Meshes)
             {
                 if (TgcCollisionUtils.testAABBAABB(mesh.BoundingBox, Bandicoot.BoundingBox))
                 {
@@ -209,9 +162,6 @@ namespace TGC.Group.Model
                 }
             }
             */
-
-
-            PostUpdate();
 
             PostUpdate();
         }

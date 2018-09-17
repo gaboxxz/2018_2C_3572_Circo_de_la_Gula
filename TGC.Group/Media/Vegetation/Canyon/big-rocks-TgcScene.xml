@@ -1,0 +1,43 @@
+<tgcScene>
+  <name>big-rocks</name>
+  <texturesExport enabled="True" dir="Textures" />
+  <lightmapExport enabled="False" dir="LightMaps" />
+  <sceneBoundingBox min="[-515.847,-0.8198,-439.5207]" max="[588.628,339.1461,142.271]" />
+  <materials count="1">
+    <m name="Standardmaterial" type="Standardmaterial">
+      <ambient>[0,0,0,0]</ambient>
+      <diffuse>[0,0,0,0]</diffuse>
+      <specular>[0,0,0,0]</specular>
+      <opacity>1</opacity>
+      <alphaBlendEnable>False</alphaBlendEnable>
+      <bitmap uvTiling="[1,1]" uvOffset="[1,1]">Piedra3.jpg</bitmap>
+    </m>
+  </materials>
+  <meshes count="3">
+    <mesh name="Roca" layer="0" type="Original" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[-14.3452,-0.0934,-12.2102]" max="[15.2204,34.4997,14.6904]" />
+      <coordinatesIdx count="108">0 1 2 2 3 0 4 1 0 0 5 4 6 7 1 1 4 6 8 9 7 7 6 8 10 11 9 9 8 10 5 0 3 3 12 5 13 14 4 4 5 13 14 15 6 6 4 14 15 16 8 8 6 15 16 17 10 10 8 16 18 13 5 5 12 18 10 12 3 3 11 10 17 18 12 12 10 17 19 7 9 9 11 19 7 19 2 2 1 7 19 11 3 3 2 19 18 17 16 16 15 14 18 16 14 13 18 14 </coordinatesIdx>
+      <textCoordsIdx count="108">0 1 2 2 3 0 2 3 0 0 1 2 2 3 0 0 1 2 2 3 0 0 1 2 2 3 0 0 1 2 2 3 0 0 1 2 1 2 3 3 0 1 1 2 3 3 0 1 1 2 3 3 0 1 1 2 3 3 0 1 1 2 3 3 0 1 0 1 2 2 3 0 0 1 2 2 3 0 3 0 1 1 2 3 1 2 3 3 0 1 0 1 2 2 3 0 4 5 6 6 7 8 4 6 8 9 4 8 </textCoordsIdx>
+      <colorsIdx count="108">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </colorsIdx>
+      <matIds count="1">0 </matIds>
+      <textCoordsLightMapIdx count="0">
+      </textCoordsLightMapIdx>
+      <vertices count="60">-9.0316 26.9267 -7.1744 3.9175 23.7526 -6.7517 -5.512 33.4123 -1.2132 -11.4853 29.1029 1.9799 7.628 17.6318 -11.5784 -8.8096 18.4916 -9.9957 14.3725 18.9699 3.1806 9.5245 27.5564 2.9089 1.688 19.0408 14.2723 -2.7267 29.2638 14.6904 -9.5363 19.3343 11.5257 -7.2339 29.7676 10.7892 -13.7319 19.1367 2.2607 -8.5838 0.2109 -10.6081 8.3974 0.7152 -12.2102 15.2204 0.7549 3.2709 2.5039 0.2768 14.3988 -10.1864 -0.0625 11.883 -14.3452 -0.0934 3.1082 -1.1361 34.4997 8.1984 </vertices>
+      <normals count="60">-0.5325 0.4745 -0.701 0.4171 0.674 -0.6097 -0.149 0.9155 -0.3736 -0.8591 0.5115 0.0185 0.4858 0.3304 -0.8092 -0.5743 0.1482 -0.8051 0.9424 0.2916 0.1638 0.7679 0.6404 0.012 0.2965 0.0836 0.9514 0.0138 0.4256 0.9048 -0.6701 0.0683 0.7391 -0.6709 0.5366 0.5119 -0.9922 0.1233 0.0162 -0.5922 0.0199 -0.8056 0.5015 0.0498 -0.8637 0.9742 0.0462 0.2208 0.2531 0.0272 0.9671 -0.6238 0.039 0.7806 -0.9988 0.0302 0.039 0.1479 0.9471 0.2848 </normals>
+      <texCoords count="20">0 1 1 1 1 0 0 0 0.7295 1 1 0.7868 0.979 0.3373 0.4817 0 0 0.3587 0.2015 0.919 </texCoords>
+      <colors count="3">255 255 255 </colors>
+      <texCoordsLightMap count="0">
+      </texCoordsLightMap>
+    </mesh>
+    <mesh name="Roca0" layer="" type="Instance" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[-515.847,35.4986,-439.5207]" max="[-256.3293,339.1461,-203.3955]" />
+      <originalMesh>0</originalMesh>
+      <transform pos="[-389.9292,36.3184,-332.3433]" rotQuat="[0,0,0,0]" scale="[8.7777,8.7777,8.7777]" />
+    </mesh>
+    <mesh name="Roca1" layer="" type="Instance" matId="0" color="[1,1,1]" visibility="1.0" lightmap="">
+      <boundingBox min="[329.1103,-0.8198,-93.8542]" max="[588.628,302.8277,142.271]" />
+      <originalMesh>0</originalMesh>
+      <transform pos="[455.028,0,13.3232]" rotQuat="[0,0,0,0]" scale="[8.7777,8.7777,8.7777]" />
+    </mesh>
+  </meshes>
+</tgcScene>

@@ -75,7 +75,6 @@ namespace TGC.Group.Model
             {
                 Item.Move(0, 0, -1090f);
             }
-            
         }
 
         public void InitCamera()
@@ -174,8 +173,6 @@ namespace TGC.Group.Model
                 }
             }
 
-            
-
             foreach (TgcMesh mesh in Parte1)
             {
                  if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.BoundingBox))
@@ -196,9 +193,6 @@ namespace TGC.Group.Model
                 }
 
             }
-
-
-
 
             //Desplazar camara para seguir al personaje
             Camara.SetCamera((Camara.Position + movimiento), anguloCamara);
