@@ -87,6 +87,8 @@
     </Compile>
     <Compile Include="Model\GameModelCanyon.cs" />
     <Compile Include="Model\GameModelIsla.cs" />
+    <Compile Include="Model\Utils\Commands\ClickRightCommand.cs" />
+    <Compile Include="Model\Utils\Commands\ClickLeftCommand.cs" />
     <Compile Include="Model\Utils\Commands\JumpCommand.cs" />
     <Compile Include="Model\Utils\Commands\MoveDownCommand.cs" />
     <Compile Include="Model\Utils\Commands\MoveUpCommand.cs" />

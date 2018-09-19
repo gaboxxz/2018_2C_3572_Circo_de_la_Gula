@@ -79,13 +79,17 @@ namespace TGC.Group.Model
             Camara.SetCamera(postition, lookAt);
         }
 
-        public void ListenInputs () { 
+        public void ListenInputs () {
             Handler.HandleInput(Key.F);
             Handler.HandleInput(Key.Left);
             Handler.HandleInput(Key.Right);
             Handler.HandleInput(Key.Up);
+            Handler.HandleInput(Key.W);
             Handler.HandleInput(Key.Down);
+            Handler.HandleInput(Key.S);
             Handler.HandleInput(Key.Space);
+            Handler.HandleInput((Key) TgcD3dInput.MouseButtons.BUTTON_LEFT);
+            Handler.HandleInput((Key) TgcD3dInput.MouseButtons.BUTTON_RIGHT);
         }
 
         /// <summary>
@@ -139,19 +143,7 @@ namespace TGC.Group.Model
 
             //Desplazar camara para seguir al personaje
             Camara.SetCamera(Camara.Position + new TGCVector3(bandicootMovement), anguloCamara);
-
-            if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
-            {
-                Camara.SetCamera(Camara.Position + new TGCVector3(0, 10f, 0), Camara.LookAt);
-            }
-
-            if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_RIGHT))
-            {
-                Camara.SetCamera(Camara.Position + new TGCVector3(0, -10f, 0), Camara.LookAt);
-            }
-
-
-
+            
             //TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, me);
             
             /*foreach (var mesh in Scene.Meshes)
@@ -160,8 +152,7 @@ namespace TGC.Group.Model
                 {
                     Bandicoot.Move(-bandicootMovement);
                 }
-            }
-            */
+            }*/
 
             PostUpdate();
         }

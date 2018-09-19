@@ -44,7 +44,7 @@ namespace TGC.Group.Model
 
         public void InitTerrain()
         {
-            string heightmapPath = $"{MediaDir}\\Heightmap\\hawai.jpg";
+            string heightmapPath = $"{MediaDir}\\Heightmaps\\hawai.jpg";
             string texturePath = $"{MediaDir}\\Textures\\TerrainTextureHawaii.jpg";
             var center = new TGCVector3(-22f, 0f, 0f);
             float scaleXZ = 50f;
@@ -187,11 +187,9 @@ namespace TGC.Group.Model
             {
                 if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.BoundingBox))
                 {
-
                     Bandicoot.Move(-movimiento);
                     Camara.SetCamera((Camara.Position - movimiento), anguloCamara);
                 }
-
             }
 
             //Desplazar camara para seguir al personaje

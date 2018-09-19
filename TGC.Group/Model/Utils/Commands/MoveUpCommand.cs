@@ -13,7 +13,7 @@ namespace TGC.Group.Model.Utils.Commands
 
         public void execute()
         {
-            if (model.Input.keyDown(Key.Up))
+            if (model.Input.keyDown(Key.Up) || model.Input.keyDown(Key.W))
             {
                 model.bandicootMovement.Z = -1;
             }

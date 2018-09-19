@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.DirectX.DirectInput;
-
+using TGC.Core.Input;
 using TGC.Group.Model.Utils.Commands;
 
 namespace TGC.Group.Model.Utils
@@ -16,10 +16,16 @@ namespace TGC.Group.Model.Utils
         public InputHandler(GameModelCanyon model) {
             commands[Key.F] = new ShowBoundingBoxCommand(model);
             commands[Key.Left] = new MoveLeftCommand(model);
+            commands[Key.A] = commands[Key.Left];
             commands[Key.Right] = new MoveRightCommand(model);
+            commands[Key.D] = commands[Key.Right];
             commands[Key.Up] = new MoveUpCommand(model);
+            commands[Key.W] = commands[Key.Up];
             commands[Key.Down] = new MoveDownCommand(model);
+            commands[Key.S] = commands[Key.Down];
             commands[Key.Space] = new JumpCommand(model);
+            commands[(Key) TgcD3dInput.MouseButtons.BUTTON_LEFT] = new ClickLeftCommand(model);
+            commands[(Key) TgcD3dInput.MouseButtons.BUTTON_RIGHT] = new ClickRightCommand(model);
         }
 
         public void HandleInput(Key key) {
