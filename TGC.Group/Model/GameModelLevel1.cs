@@ -69,6 +69,8 @@ namespace TGC.Group.Model
 
             Lista = new Escena().ObtenerMeshesDeEscena($"{MediaDir}/Level_1/saveLevel1MeshCreator-TgcScene.xml");
 
+            
+
             foreach (Mesh Item in Lista)
             {
                 Item.Malla.Move(0, 0, -1090f);
@@ -187,10 +189,11 @@ namespace TGC.Group.Model
             {
                 if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.Malla.BoundingBox))
                 {
-                    mesh.EjecutarColision(Bandicoot, Camara, movimiento);
+                    mesh.ExecuteCollision(Bandicoot, Camara, movimiento);
                 }
 
             }
+            Lista.RemoveAll(mesh => mesh.Malla.BoundingBox == null);
 
             //Desplazar camara para seguir al personaje
             Camara.SetCamera((Camara.Position + movimiento), anguloCamara);
@@ -239,34 +242,14 @@ namespace TGC.Group.Model
             DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText("Con clic izquierdo subimos la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
             DrawText.drawText("La posicion del bandicoot es: " + TGCVector3.PrintVector3(Bandicoot.Position), 0, 40, Color.Black);
+            
             //terrain.Render();
 
             // Cuando tenemos modelos mesh podemos utilizar un método que hace la matriz de transformación estándar.
             // Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
             Bandicoot.UpdateMeshTransform();
             Bandicoot.Render();
-            /*
-            foreach (TgcMesh item in Parte1)
-            {
-                item.Render();
-            }
-
-            foreach (TgcMesh item in Parte2)
-            {
-                item.Render();
-            }
-
-            if (BoundingBox)
-            {
-                Bandicoot.BoundingBox.Render();
-                foreach (TgcMesh item in Parte1)
-                {
-                    item.BoundingBox.Render();
-                }
-
-
-            }
-            */
+            
             foreach (Mesh item in Lista)
             {
                 item.RenderMesh();

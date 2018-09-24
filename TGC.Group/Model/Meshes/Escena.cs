@@ -30,18 +30,13 @@ namespace TGC.Group.Model.Meshes
         
         public void AgregarMeshesDeEscena(List<Mesh> lista, String FilePath)
         {
-            //listaMeshes.Clear();
             var meshes = sceneLoader.loadSceneFromFile(FilePath).Meshes;
 
             foreach (var mesh in meshes)
             {
-                /*if(mesh.Name.Equals("fruta3"))
-                    lista.Add(new Mesh(mesh));
-                else*/
                     lista.Add(new Mesh(mesh));
             }
-
-            //return lista;
+            
         }
 
         public void LimpiarEscena()

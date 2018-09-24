@@ -19,12 +19,12 @@ namespace TGC.Group.Model.Meshes
              //this.Malla = mesh;
          }
  */
-        public void EjecutarColision(TgcMesh Malla)
+        public void ExecuteCollision(TgcMesh Malla)
         {
             Malla.Enabled = false;
         }
 
-        public void EjecutarColision(TgcMesh Malla, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
+        public void ExecuteCollision(TgcMesh Malla, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
         {
             Malla.Enabled = false;
             Malla.BoundingBox = null;

@@ -223,9 +223,10 @@ namespace TGC.Group.Model
                 if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.Malla.BoundingBox))
                 {
                     //comment = mesh.GetType().ToString();
-                    mesh.EjecutarColision(Bandicoot, Camara, movimiento);
+                    mesh.ExecuteCollision(Bandicoot, Camara, movimiento);
                 }
             }
+            ListaMeshes.RemoveAll(mesh => mesh.Malla.BoundingBox == null);
 
             //Desplazar camara para seguir al personaje
             Camara.SetCamera((Camara.Position + movimiento), anguloCamara);

@@ -9,8 +9,8 @@ namespace TGC.Group.Model.Meshes
 {
     interface TipoMesh
     {
-        void EjecutarColision(TgcMesh item, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento);
-        void EjecutarColision(TgcMesh item);
+        void ExecuteCollision(TgcMesh item, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento);
+        void ExecuteCollision(TgcMesh item);
 
 
     }

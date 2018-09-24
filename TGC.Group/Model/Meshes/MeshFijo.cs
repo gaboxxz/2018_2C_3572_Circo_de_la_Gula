@@ -9,14 +9,15 @@ namespace TGC.Group.Model.Meshes
 {
     class MeshFijo : TipoMesh
     {
-        public void EjecutarColision(TgcMesh item, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
+        public void ExecuteCollision(TgcMesh item, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
         {
             var anguloCamara = bandicoot.Position;
             bandicoot.Move(-movimiento);
+            
             camara.SetCamera((camara.Position - movimiento), anguloCamara);
         }
 
-        public void EjecutarColision(TgcMesh item)
+        public void ExecuteCollision(TgcMesh item)
         {
             //throw new NotImplementedException();
         }

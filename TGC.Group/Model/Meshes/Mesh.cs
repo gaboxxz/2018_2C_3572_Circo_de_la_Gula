@@ -17,7 +17,7 @@ namespace TGC.Group.Model.Meshes
         public Mesh(TgcMesh malla)
         {
             this.Malla = malla;
-            if (malla.Name.Equals("fruta3"))
+            if (EsFruta())
                 tipo = new MeshFruta();
             else
                 tipo = new MeshFijo();
@@ -29,12 +29,12 @@ namespace TGC.Group.Model.Meshes
             return Malla.Name.Equals("fruta3");
         }
 
-        public void EjecutarColision(TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
+        public void ExecuteCollision(TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
         {
-            tipo.EjecutarColision(Malla, bandicoot, camara, movimiento);
+            tipo.ExecuteCollision(Malla, bandicoot, camara, movimiento);
         }
 
-        public void EjecutarColision()
+        public void ExecuteCollision()
         {
 
         }
@@ -48,7 +48,6 @@ namespace TGC.Group.Model.Meshes
 
         public void RenderBoundingBox()
         {
-           if (Malla.BoundingBox != null)
                 Malla.BoundingBox.Render();
         }
 
