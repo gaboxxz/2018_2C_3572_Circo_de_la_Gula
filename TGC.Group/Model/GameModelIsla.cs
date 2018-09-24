@@ -11,6 +11,8 @@ using TGC.Core.Collision;
 using System;
 using TGC.Core.Geometry;
 
+using TGC.Group.Model.Meshes;
+
 namespace TGC.Group.Model
 {
     public class GameModelIsla : TgcExample
@@ -31,6 +33,9 @@ namespace TGC.Group.Model
         //pisos, paredes y otros meshes
         private List<TgcMesh> Parte1 = new List<TgcMesh>();
         private List<TgcMesh> Parte2 = new List<TgcMesh>();
+
+
+        private List<Mesh> ListaMeshes = new List<Mesh>();
 
         private TgcMesh Bandicoot { get; set; }
         private bool BoundingBox { get; set; }
@@ -70,6 +75,23 @@ namespace TGC.Group.Model
 
             Parte1 = sceneLoader.loadSceneFromFile($"{MediaDir}/Nivel1-1-TgcScene.xml").Meshes;
             Parte2 = sceneLoader.loadSceneFromFile($"{MediaDir}/Nivel1-2-TgcScene.xml").Meshes;
+
+
+            //Parte2 = sceneLoader.loadSceneFromFile($"{MediaDir}/room-with-fruit3-TgcScene-TgcScene.xml").Meshes;
+
+
+            var unaEscena = new Escena();
+
+            ListaMeshes = unaEscena.ObtenerMeshesDeEscena($"{MediaDir}/Nivel1-1-TgcScene.xml");
+            //Escena.AddRange(new Escena().ObtenerMeshesDeEscena($"{MediaDir}/room-with-fruit3-TgcScene-TgcScene.xml"));
+
+            unaEscena.AgregarMeshesDeEscena(ListaMeshes, $"{MediaDir}/Nivel1-2-TgcScene.xml");
+
+            foreach (var mesh in ListaMeshes)
+            {
+                //mesh.Malla.Move(0, 0, -1090f);
+            }
+
 
             foreach (TgcMesh Item in Parte2)
             {
@@ -172,7 +194,7 @@ namespace TGC.Group.Model
                     saltando = false;
                 }
             }
-
+            /*
             foreach (TgcMesh mesh in Parte1)
             {
                  if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.BoundingBox))
@@ -189,6 +211,19 @@ namespace TGC.Group.Model
                 {
                     Bandicoot.Move(-movimiento);
                     Camara.SetCamera((Camara.Position - movimiento), anguloCamara);
+                }
+            }*/
+
+            foreach (var mesh in ListaMeshes)
+            {
+                if (mesh.Malla.BoundingBox == null)
+                {
+                    continue;
+                }
+                if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.Malla.BoundingBox))
+                {
+                    //comment = mesh.GetType().ToString();
+                    mesh.EjecutarColision(Bandicoot, Camara, movimiento);
                 }
             }
 
@@ -245,7 +280,7 @@ namespace TGC.Group.Model
             // Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
             Bandicoot.UpdateMeshTransform();
             Bandicoot.Render();
-
+            /*
             foreach (TgcMesh item in Parte1)
             {
                 item.Render();
@@ -255,9 +290,19 @@ namespace TGC.Group.Model
             {
                 item.Render();
             }
+            */
+            foreach (Mesh item in ListaMeshes)
+            {
+                item.RenderMesh();
+            }
 
             if (BoundingBox)
             {
+                foreach (Mesh mesh in ListaMeshes)
+                {
+                    mesh.RenderBoundingBox();
+                }
+                /*
                 Bandicoot.BoundingBox.Render();
                 foreach (TgcMesh item in Parte1)
                 {
@@ -267,7 +312,7 @@ namespace TGC.Group.Model
                 {
                     item.BoundingBox.Render();
                 }
-
+                */
             }
 
             // Finaliza el render y presenta en pantalla, al igual que el preRender se debe usar para casos 

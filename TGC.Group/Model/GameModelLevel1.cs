@@ -10,6 +10,7 @@ using TGC.Core.Terrain;
 using TGC.Core.Collision;
 using System;
 using TGC.Core.Geometry;
+using TGC.Group.Model.Meshes;
 
 namespace TGC.Group.Model
 {
@@ -31,6 +32,8 @@ namespace TGC.Group.Model
         //pisos, paredes y otros meshes
         private List<TgcMesh> Parte1 = new List<TgcMesh>();
         private List<TgcMesh> Parte2 = new List<TgcMesh>();
+
+        private List<Mesh> Lista = new List<Mesh>();
 
         private TgcMesh Bandicoot { get; set; }
         private bool BoundingBox { get; set; }
@@ -63,6 +66,14 @@ namespace TGC.Group.Model
             {
                 Item.Move(0, 0, -1090f);
             }
+
+            Lista = new Escena().ObtenerMeshesDeEscena($"{MediaDir}/Level_1/saveLevel1MeshCreator-TgcScene.xml");
+
+            foreach (Mesh Item in Lista)
+            {
+                Item.Malla.Move(0, 0, -1090f);
+            }
+
         }
 
         public void InitCamera()
@@ -160,7 +171,7 @@ namespace TGC.Group.Model
                     saltando = false;
                 }
             }
-
+            /*
             foreach (TgcMesh mesh in Parte1)
             {
                 if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.BoundingBox))
@@ -168,6 +179,15 @@ namespace TGC.Group.Model
 
                     Bandicoot.Move(-movimiento);
                     Camara.SetCamera((Camara.Position - movimiento), anguloCamara);
+                }
+
+            }
+            */
+            foreach (Mesh mesh in Lista)
+            {
+                if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.Malla.BoundingBox))
+                {
+                    mesh.EjecutarColision(Bandicoot, Camara, movimiento);
                 }
 
             }
@@ -225,7 +245,7 @@ namespace TGC.Group.Model
             // Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
             Bandicoot.UpdateMeshTransform();
             Bandicoot.Render();
-
+            /*
             foreach (TgcMesh item in Parte1)
             {
                 item.Render();
@@ -246,7 +266,23 @@ namespace TGC.Group.Model
 
 
             }
+            */
+            foreach (Mesh item in Lista)
+            {
+                item.RenderMesh();
+            }
+            
 
+            if (BoundingBox)
+            {
+                Bandicoot.BoundingBox.Render();
+                foreach (Mesh item in Lista)
+                {
+                    item.RenderBoundingBox();
+                }
+
+
+            }
             // Finaliza el render y presenta en pantalla, al igual que el preRender se debe usar para casos 
             // puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
