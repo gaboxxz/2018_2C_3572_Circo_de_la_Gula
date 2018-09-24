@@ -13,23 +13,23 @@ namespace TGC.Group.Model
 {
     public class GameModelCanyon : TgcExample
     {
-        /* Atributos */
+        /* Attributes */
         public bool isJumping;
         public int jumpDirection = 1;
         private float posInicialBandicoot;
         private float alturaMaximaSalto = 20f;
-
         private const float MOVEMENT_SPEED = 100f;
-        private TgcSimpleTerrain terrain;
         public TGCVector3 bandicootMovement;
+        private TgcSimpleTerrain terrain;
+        private Physics physics;
 
-        // Propiedades
+        // Properties
         private InputHandler Handler { get; set; }
         public bool BoundingBox { get; set; }
-        private TgcMesh Bandicoot { get; set; } 
-        public TgcScene Scene { get; set; }
+        public TgcMesh Bandicoot { get; set; }
 
-        /* Metodos */
+        /* Methods */
+
         // Constructor
         public GameModelCanyon(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
@@ -63,6 +63,8 @@ namespace TGC.Group.Model
             Bandicoot.Scale = new TGCVector3(0.05f, 0.05f, 0.05f);
             Bandicoot.RotateY(3.12f); // NO HAY QUE USAR ESTE METODO PORQUE HACE CALCULOS sen(x) y cos(x)
             Bandicoot.BoundingBox.setExtremes(pMin, pMax);
+
+            posInicialBandicoot = Bandicoot.Position.Y;
         }
 
         public void InitCamera()
@@ -79,7 +81,14 @@ namespace TGC.Group.Model
             Camara.SetCamera(postition, lookAt);
         }
 
-        public void ListenInputs () {
+        public void InitPhysics() {
+            physics = new Physics();
+            physics.SetTriangleDataVB(terrain.getData());
+            physics.Init(MediaDir);
+        }
+
+        public void ListenInputs()
+        {
             Handler.HandleInput(Key.F);
             Handler.HandleInput(Key.Left);
             Handler.HandleInput(Key.Right);
@@ -88,8 +97,8 @@ namespace TGC.Group.Model
             Handler.HandleInput(Key.Down);
             Handler.HandleInput(Key.S);
             Handler.HandleInput(Key.Space);
-            Handler.HandleInput((Key) TgcD3dInput.MouseButtons.BUTTON_LEFT);
-            Handler.HandleInput((Key) TgcD3dInput.MouseButtons.BUTTON_RIGHT);
+            Handler.HandleInput((Key)TgcD3dInput.MouseButtons.BUTTON_LEFT);
+            Handler.HandleInput((Key)TgcD3dInput.MouseButtons.BUTTON_RIGHT);
         }
 
         /// <summary>
@@ -99,20 +108,18 @@ namespace TGC.Group.Model
         /// </summary>
         public override void Init()
         {
-            //Device de DirectX para crear primitivas.
             var d3dDevice = D3DDevice.Instance.Device;
 
             InitTerrain();
             InitMeshes();
             InitCamera();
-
-            posInicialBandicoot = Bandicoot.Position.Y;
+            InitPhysics();
         }
-        
+
         public override void Update()
         {
             PreUpdate();
-           
+
             var anguloCamara = TGCVector3.Empty;
 
             ListenInputs();
@@ -141,18 +148,10 @@ namespace TGC.Group.Model
                 }
             }
 
-            //Desplazar camara para seguir al personaje
+            physics.Update(Input);
+           
+            // Desplazar camara para seguir al personaje
             Camara.SetCamera(Camara.Position + new TGCVector3(bandicootMovement), anguloCamara);
-            
-            //TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, me);
-            
-            /*foreach (var mesh in Scene.Meshes)
-            {
-                if (TgcCollisionUtils.testAABBAABB(mesh.BoundingBox, Bandicoot.BoundingBox))
-                {
-                    Bandicoot.Move(-bandicootMovement);
-                }
-            }*/
 
             PostUpdate();
         }
@@ -171,18 +170,16 @@ namespace TGC.Group.Model
             DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText("Con clic izquierdo subimos la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
 
-            terrain.Render();
-
-            // Cuando tenemos modelos mesh podemos utilizar un método que hace la matriz de transformación estándar.
-            // Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
-            Bandicoot.UpdateMeshTransform();
-            Bandicoot.Render();
-
             if (BoundingBox)
             {
                 Bandicoot.BoundingBox.Render();
             }
 
+            Bandicoot.UpdateMeshTransform();
+            Bandicoot.Render();
+            terrain.Render();
+            physics.Render();
+          
             // Finaliza el render y presenta en pantalla, al igual que el preRender se debe usar para casos 
             // puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
@@ -195,6 +192,7 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             Bandicoot.Dispose();
+            physics.Dispose();
             terrain.Dispose();
         }
     }
