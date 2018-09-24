@@ -31,12 +31,14 @@
             this.panel3D = new System.Windows.Forms.Panel();
             this.buttonIsland = new System.Windows.Forms.Button();
             this.buttonCanyon = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel3D.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel3D
             // 
             this.panel3D.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.panel3D.Controls.Add(this.button1);
             this.panel3D.Controls.Add(this.buttonIsland);
             this.panel3D.Controls.Add(this.buttonCanyon);
             this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -65,6 +67,16 @@
             this.buttonCanyon.UseVisualStyleBackColor = true;
             this.buttonCanyon.Click += new System.EventHandler(this.ButtonCanyon_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(464, 363);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(196, 47);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "Nivel 1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // GameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -87,6 +99,7 @@
         private System.Windows.Forms.Panel panel3D;
         private System.Windows.Forms.Button buttonIsland;
         private System.Windows.Forms.Button buttonCanyon;
+        private System.Windows.Forms.Button button1;
     }
 }
 

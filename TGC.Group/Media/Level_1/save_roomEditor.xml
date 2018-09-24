@@ -1,0 +1,69 @@
+<roomsEditor-Map>
+  <mapSettings width="1000" height="1000" scaleX="2" scaleY="2" scaleZ="2" />
+  <rooms count="8">
+    <room name="Room-1" x="0" y="660" width="170" length="320" height="100" floorLevel="0">
+      <wall name="Roof" textureName="baldosaFacultad.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="pasto.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="stones.bmp" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="stones.bmp" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="stones.bmp" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="stones.bmp" autoAdjustUv="True" uTile="1" vTile="1" />
+    </room>
+    <room name="Room-2" x="10" y="430" width="150" length="230" height="100" floorLevel="0">
+      <wall name="Roof" textureName="baldosaFacultad.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="pasto.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="stones.bmp" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="stones.bmp" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="stones.bmp" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="stones.bmp" autoAdjustUv="True" uTile="1" vTile="1" />
+    </room>
+    <room name="Room-3" x="10" y="130" width="250" length="300" height="100" floorLevel="0">
+      <wall name="Roof" textureName="cobblestone_quad.JPG" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="pasto.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+    </room>
+    <room name="Room-4" x="170" y="10" width="370" length="120" height="100" floorLevel="0">
+      <wall name="Roof" textureName="BM_NormalMap.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="loza.bmp" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="BM_NormalMap.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="BM_NormalMap.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="BM_NormalMap.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="BM_NormalMap.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+    </room>
+    <room name="Room-5" x="420" y="130" width="110" length="330" height="100" floorLevel="0">
+      <wall name="Roof" textureName="agua.bmp" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="loza.bmp" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="piso2.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="piso2.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="rocks.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="rocks.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+    </room>
+    <room name="Room-6" x="240" y="460" width="280" length="310" height="100" floorLevel="0">
+      <wall name="Roof" textureName="baldosaFacultad.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="pasto.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+    </room>
+    <room name="Room-8" x="320" y="770" width="30" length="80" height="100" floorLevel="0">
+      <wall name="Roof" textureName="BM_NormalMap.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="BM_NormalMap.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="BM_NormalMap.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="BM_NormalMap.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="BM_NormalMap.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="BM_NormalMap.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+    </room>
+    <room name="Room-12" x="190" y="850" width="310" length="140" height="100" floorLevel="0">
+      <wall name="Roof" textureName="baldosaFacultad.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="Floor" textureName="piso2.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="East" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="West" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="North" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+      <wall name="South" textureName="BM_DiffuseMap_pared.jpg" autoAdjustUv="True" uTile="1" vTile="1" />
+    </room>
+  </rooms>
+</roomsEditor-Map>

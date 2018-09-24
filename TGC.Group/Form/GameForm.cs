@@ -204,7 +204,7 @@ namespace TGC.Group.Form
 
             Model = new GameModelCanyon(mediaDir, shadersDir);
             ExecuteModel();
-
+            button1.Hide();
             buttonCanyon.Hide();
             buttonIsland.Hide();
         }
@@ -216,9 +216,23 @@ namespace TGC.Group.Form
 
             Model = new GameModelIsla(mediaDir, shadersDir);
             ExecuteModel();
-
+            button1.Hide();
             buttonCanyon.Hide();
             buttonIsland.Hide();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string mediaDir = $"{Environment.CurrentDirectory}\\{Game.Default.MediaDirectory}";
+            string shadersDir = $"{Environment.CurrentDirectory}\\{Game.Default.ShadersDirectory}";
+
+            Model = new GameModelLevel1(mediaDir, shadersDir);
+            ExecuteModel();
+
+            button1.Hide();
+            buttonCanyon.Hide();
+            buttonIsland.Hide();
+
         }
     }
 }
