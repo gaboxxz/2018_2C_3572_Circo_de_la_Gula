@@ -31,6 +31,11 @@ namespace TGC.Group.Model.Meshes
             Console.WriteLine("prueba colision fruta");
         }
 
+        public void ExecuteJumpCollision(TgcMesh item, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
+        {
+            throw new NotImplementedException();
+        }
+
         /*public new void RenderMesh()
         {
             

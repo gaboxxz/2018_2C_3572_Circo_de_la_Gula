@@ -26,8 +26,11 @@ namespace TGC.Group.Model
         private bool saltando;
         private int direccionSalto = 1;
         private float posInicialBandicoot;
-        private const float alturaMaximaSalto = 70f;
+        private float posBaseBandicoot;
+
+        private const float alturaMaximaInicial = 70f;
         private const float MOVEMENT_SPEED = 100f;
+        private float alturaMaximaSalto;
         private TgcSimpleTerrain terrain;
 
         //pisos, paredes y otros meshes
@@ -38,6 +41,9 @@ namespace TGC.Group.Model
         private List<Mesh> ListaMeshes = new List<Mesh>();
 
         private TgcMesh Bandicoot { get; set; }
+        
+        private Mesh objetoColisionado = null;
+
         private bool BoundingBox { get; set; }
 
         public GameModelIsla(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
@@ -121,6 +127,8 @@ namespace TGC.Group.Model
             InitCamera();
 
             posInicialBandicoot = Bandicoot.Position.Y;
+            posBaseBandicoot = Bandicoot.Position.Y;
+
         }
 
         /// <summary>
@@ -132,6 +140,7 @@ namespace TGC.Group.Model
         {
             PreUpdate();
 
+            alturaMaximaSalto = posBaseBandicoot + alturaMaximaInicial;
             // Capturar Input teclado utilizado para movimiento 
             var anguloCamara = TGCVector3.Empty;
             var movimiento = TGCVector3.Empty;
@@ -168,6 +177,7 @@ namespace TGC.Group.Model
             {
                 saltando = true;
                 direccionSalto = 1;
+               //Bandicoot.Move(0, direccionSalto * MOVEMENT_SPEED * ElapsedTime, 0);
             }
 
             //Posicion original del mesh principal (o sea del bandicoot)
@@ -177,23 +187,59 @@ namespace TGC.Group.Model
             //Multiplicar movimiento por velocidad y elapsedTime
             movimiento *= MOVEMENT_SPEED * ElapsedTime;
 
+
+
+            /*
+            //Crear manejador de colisiones
+            collisionManager = new SphereCollisionManager();
+            collisionManager.GravityEnabled = true;
+            */
+
             Bandicoot.Move(movimiento);
+
 
             if (saltando)
             {
                 Bandicoot.Move(0, direccionSalto * MOVEMENT_SPEED * ElapsedTime, 0);
+                //movimiento.Y = direccionSalto * MOVEMENT_SPEED * ElapsedTime;
 
                 //Si la posicion en Y es mayor a la maxima altura. 
                 if (Bandicoot.Position.Y > alturaMaximaSalto)
                 {
-                    direccionSalto = -1;
+                        direccionSalto = -1;
                 }
-
-                if (Bandicoot.Position.Y <= posInicialBandicoot)
+               foreach (var item in ListaMeshes)
                 {
-                    saltando = false;
+                    if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, item.Malla.BoundingBox))
+                    {
+                        if (!item.EsFruta())
+                        {
+                            //Bandicoot.Transform = TGCMatrix.Translation(-movimiento.X, movimiento.Y / 2 + ((item.Malla.BoundingBox.PMax.Y / 2) + 1), -movimiento.Z);
+                            Bandicoot.Move(0, 1 * MOVEMENT_SPEED * ElapsedTime + 0.1f, 0);
+                            objetoColisionado = item;
+                            posBaseBandicoot = item.Malla.BoundingBox.PMax.Y;
+                            saltando = false;
+                            break;
+                        }
+                    }
                 }
             }
+            else
+            {
+                if (Bandicoot.Position.Y > posInicialBandicoot && !objetoColisionado.EsFruta())
+                {
+                    //saltando = false;
+                    
+                    if(objetoColisionado.isUpperCollision(Bandicoot, posBaseBandicoot) && objetoColisionado.Malla != null)
+                    {
+                        Bandicoot.Move(0, -1 * MOVEMENT_SPEED * ElapsedTime + 0.1f, 0);
+                        posBaseBandicoot = posInicialBandicoot;
+                        saltando = true;
+                    }
+
+                }
+            }
+
             /*
             foreach (TgcMesh mesh in Parte1)
             {
@@ -303,8 +349,9 @@ namespace TGC.Group.Model
                 {
                     mesh.RenderBoundingBox();
                 }
-                /*
                 Bandicoot.BoundingBox.Render();
+
+                /*
                 foreach (TgcMesh item in Parte1)
                 {
                     item.BoundingBox.Render();
@@ -330,5 +377,11 @@ namespace TGC.Group.Model
             Bandicoot.Dispose();
             terrain.Dispose();
         }
+
+        
     }
+
+
+    
+
 }
