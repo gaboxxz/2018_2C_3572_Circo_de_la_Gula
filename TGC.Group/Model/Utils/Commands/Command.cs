@@ -1,4 +1,6 @@
-﻿namespace TGC.Group.Model.Utils
+﻿using TGC.Core.Mathematica;
+
+namespace TGC.Group.Model.Utils
 {
     interface Command
     {

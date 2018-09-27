@@ -99,6 +99,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Game.settings</DependentUpon>
     </Compile>
+    <Compile Include="Model\Camara\CamaraTerceraPersona.cs" />
     <Compile Include="Model\GameModelCanyon.cs" />
     <Compile Include="Model\GameModelIsla.cs" />
     <Compile Include="Model\GameModelLevel1.cs" />

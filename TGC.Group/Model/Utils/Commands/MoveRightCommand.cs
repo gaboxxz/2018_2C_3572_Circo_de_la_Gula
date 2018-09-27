@@ -15,7 +15,9 @@ namespace TGC.Group.Model.Utils.Commands
         {
             if (model.Input.keyDown(Key.Right) || model.Input.keyDown(Key.D))
             {
-                model.bandicootMovement.X = -1;
+                model.Bandicoot.RotateY(1 * model.ElapsedTime);
+                model.banditcamara.rotateY(1 * model.ElapsedTime);
+                model.anguloDirector += (1*model.ElapsedTime);
             }
         }
     }

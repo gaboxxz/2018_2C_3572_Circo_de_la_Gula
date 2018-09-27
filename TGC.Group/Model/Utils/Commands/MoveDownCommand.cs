@@ -15,7 +15,12 @@ namespace TGC.Group.Model.Utils.Commands
         {
             if (model.Input.keyDown(Key.Down) || model.Input.keyDown(Key.S))
             {
-                model.bandicootMovement.Z = 1;
+                model.bandicootMovement.X = (-1) * Core.Mathematica.FastMath.Sin(model.anguloDirector);
+                model.bandicootMovement.Z = (-1) * Core.Mathematica.FastMath.Cos(model.anguloDirector);
+                model.bandicootMovement.Y = 0;
+
+                model.banditcamara.OffsetForward -= 1 * model.ElapsedTime;
+                model.banditcamara.Target = model.Bandicoot.Position;
             }
         }
     }

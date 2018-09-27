@@ -8,6 +8,7 @@ using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Terrain;
 using TGC.Group.Model.Utils;
+using TGC.Group.Camara;
 
 namespace TGC.Group.Model
 {
@@ -22,6 +23,8 @@ namespace TGC.Group.Model
         public TGCVector3 bandicootMovement;
         private TgcSimpleTerrain terrain;
         private Physics physics;
+		public float anguloDirector = FastMath.ToRad(180);
+        public TgcThirdPersonCamera banditcamara;
 
         // Properties
         private InputHandler Handler { get; set; }
@@ -58,10 +61,16 @@ namespace TGC.Group.Model
             string path = $"{MediaDir}/crash/CRASH (2)-TgcScene.xml";
             var pMin = new TGCVector3(-185f, 0, -100f);
             var pMax = new TGCVector3(0, 225f, 0);
+            TGCMatrix escala;
+            TGCMatrix rotacion;
 
             Bandicoot = sceneLoader.loadSceneFromFile(path).Meshes[0];
-            Bandicoot.Scale = new TGCVector3(0.05f, 0.05f, 0.05f);
-            Bandicoot.RotateY(3.12f); // NO HAY QUE USAR ESTE METODO PORQUE HACE CALCULOS sen(x) y cos(x)
+
+            escala = TGCMatrix.Scaling(new TGCVector3(0.1f,0.1f,0.1f));
+            rotacion = TGCMatrix.RotationYawPitchRoll(0, 3.12f, 0);
+
+            Bandicoot.Transform = rotacion * escala; 
+     
             Bandicoot.BoundingBox.setExtremes(pMin, pMax);
 
             posInicialBandicoot = Bandicoot.Position.Y;
@@ -75,10 +84,12 @@ namespace TGC.Group.Model
                Internamente el framework construye la matriz de view con estos dos vectores.
                Luego en nuestro juego tendremos que crear una cámara que cambie 
                la matriz de view con variables como movimientos o animaciones de escenas. */
-            var postition = new TGCVector3(-5, 20, 50);
-            var lookAt = Bandicoot.Position;
+            banditcamara = new TgcThirdPersonCamera(Bandicoot.Position, 50f, 150f);
+            Camara = banditcamara;
+			//var postition = new TGCVector3(-5, 20, 50);
+            //var lookAt = Bandicoot.Position;
 
-            Camara.SetCamera(postition, lookAt);
+            // Camara.SetCamera(postition, lookAt);
         }
 
         public void InitPhysics() {
@@ -151,7 +162,7 @@ namespace TGC.Group.Model
             physics.Update(Input);
            
             // Desplazar camara para seguir al personaje
-            Camara.SetCamera(Camara.Position + new TGCVector3(bandicootMovement), anguloCamara);
+            banditcamara.SetCamera(banditcamara.Position + new TGCVector3(bandicootMovement), anguloCamara);
 
             PostUpdate();
         }
