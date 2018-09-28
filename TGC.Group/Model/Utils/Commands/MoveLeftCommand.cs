@@ -4,11 +4,11 @@ namespace TGC.Group.Model.Utils.Commands
 {
     class MoveLeftCommand : Command
     {
-        private GameModelCanyon model;
+        private IGameModel model;
 
-        public MoveLeftCommand(GameModelCanyon model)
+        public MoveLeftCommand(IGameModel ctx)
         {
-            this.model = model;
+            model = ctx;
         }
 
         public void execute()
@@ -16,8 +16,8 @@ namespace TGC.Group.Model.Utils.Commands
             if (model.Input.keyDown(Key.Left) || model.Input.keyDown(Key.A))
             {
                 model.Bandicoot.RotateY(-1 * model.ElapsedTime);
-                model.banditcamara.rotateY(-1 * model.ElapsedTime);
-                model.anguloDirector -= (1*model.ElapsedTime); 
+                model.BandicootCamera.rotateY(-1 * model.ElapsedTime);
+                model.DirectorAngle -= (1*model.ElapsedTime); 
             }
         }
 

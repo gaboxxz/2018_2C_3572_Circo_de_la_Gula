@@ -5,11 +5,11 @@ namespace TGC.Group.Model.Utils.Commands
 {
     class ClickLeftCommand : Command
     {
-        private GameModelCanyon model;
+        private IGameModel model;
 
-        public ClickLeftCommand(GameModelCanyon model)
+        public ClickLeftCommand(IGameModel ctx)
         {
-            this.model = model;
+            model = ctx;
         }
 
         public void execute()

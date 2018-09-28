@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.DirectX.DirectInput;
+using TGC.Core.Example;
 using TGC.Core.Input;
 using TGC.Group.Model.Utils.Commands;
 
@@ -13,7 +14,8 @@ namespace TGC.Group.Model.Utils
         private Dictionary<Key, Command> commands = new Dictionary<Key, Command>();
 
         // Utiliza el modelo y bindea un comando a un evento.
-        public InputHandler(GameModelCanyon model) {
+        public InputHandler(IGameModel model)
+        {
             commands[Key.F] = new ShowBoundingBoxCommand(model);
             commands[Key.Left] = new MoveLeftCommand(model);
             commands[Key.A] = commands[Key.Left];
@@ -28,7 +30,8 @@ namespace TGC.Group.Model.Utils
             commands[(Key) TgcD3dInput.MouseButtons.BUTTON_RIGHT] = new ClickRightCommand(model);
         }
 
-        public void HandleInput(Key key) {
+        public void HandleInput(Key key)
+        {
             Command command = commands[key];
 
             if (command != null) {

@@ -4,19 +4,19 @@ namespace TGC.Group.Model.Utils.Commands
 {
     class JumpCommand : Command
     {
-        private GameModelCanyon model;
+        private IGameModel model;
 
-        public JumpCommand(GameModelCanyon model)
+        public JumpCommand(IGameModel ctx)
         {
-            this.model = model;
+            model = ctx;
         }
 
         public void execute()
         {
-            if (model.Input.keyPressed(Key.Space) && !model.isJumping)
+            if (model.Input.keyPressed(Key.Space) && !model.IsJumping)
             {
-                model.isJumping = true;
-                model.jumpDirection = 1;
+                model.IsJumping = true;
+                model.JumpDirection = 1;
             }
         }
     }

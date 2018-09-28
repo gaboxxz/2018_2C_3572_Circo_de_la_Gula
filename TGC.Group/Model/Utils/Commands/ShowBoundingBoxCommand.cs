@@ -1,14 +1,16 @@
 ﻿using Microsoft.DirectX.DirectInput;
+using TGC.Core.Example;
+using TGC.Core.Input;
 
 namespace TGC.Group.Model.Utils
 {
     class ShowBoundingBoxCommand : Command
     {
-        private GameModelCanyon model;
+        private IGameModel model;
 
-        public ShowBoundingBoxCommand(GameModelCanyon model)
+        public ShowBoundingBoxCommand(IGameModel ctx)
         {
-            this.model = model;
+            model = ctx;
         }
 
         public void execute()

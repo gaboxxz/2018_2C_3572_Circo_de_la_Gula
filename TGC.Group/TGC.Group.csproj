@@ -108,6 +108,7 @@
     <Compile Include="Model\Meshes\MeshFijo.cs" />
     <Compile Include="Model\Meshes\MeshFruta.cs" />
     <Compile Include="Model\Meshes\TipoMesh.cs" />
+    <Compile Include="Model\Utils\IGameModel.cs" />
     <Compile Include="Model\Utils\Physics.cs" />
     <Compile Include="Model\Utils\Commands\ClickRightCommand.cs" />
     <Compile Include="Model\Utils\Commands\ClickLeftCommand.cs" />

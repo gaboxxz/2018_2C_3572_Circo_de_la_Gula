@@ -4,11 +4,11 @@ namespace TGC.Group.Model.Utils.Commands
 {
     class MoveRightCommand : Command
     {
-        private GameModelCanyon model;
+        private IGameModel model;
 
-        public MoveRightCommand(GameModelCanyon model)
+        public MoveRightCommand(IGameModel ctx)
         {
-            this.model = model;
+            model = ctx;
         }
 
         public void execute()
@@ -16,8 +16,8 @@ namespace TGC.Group.Model.Utils.Commands
             if (model.Input.keyDown(Key.Right) || model.Input.keyDown(Key.D))
             {
                 model.Bandicoot.RotateY(1 * model.ElapsedTime);
-                model.banditcamara.rotateY(1 * model.ElapsedTime);
-                model.anguloDirector += (1*model.ElapsedTime);
+                model.BandicootCamera.rotateY(1 * model.ElapsedTime);
+                model.DirectorAngle += (1*model.ElapsedTime);
             }
         }
     }
