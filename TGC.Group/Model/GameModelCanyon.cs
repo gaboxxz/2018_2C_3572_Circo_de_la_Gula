@@ -65,11 +65,11 @@ namespace TGC.Group.Model
             TGCMatrix rotacion;
 
             Bandicoot = sceneLoader.loadSceneFromFile(path).Meshes[0];
-
+            
             escala = TGCMatrix.Scaling(new TGCVector3(0.1f, 0.1f, 0.1f));
             rotacion = TGCMatrix.RotationYawPitchRoll(0, 3.12f, 0);
 
-            Bandicoot.Transform = rotacion * escala;
+            Bandicoot.Transform = escala * rotacion;
 
             Bandicoot.Scale = new TGCVector3(.1f, .1f, .1f);
             Bandicoot.RotateY (3.12f);
