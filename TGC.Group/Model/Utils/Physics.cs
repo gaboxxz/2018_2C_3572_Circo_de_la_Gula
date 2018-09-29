@@ -27,6 +27,9 @@ namespace TGC.Group.Model.Utils
         private RigidBody ball;
         private TGCSphere sphereMesh;
         private TGCVector3 director;
+        public RigidBody bandicootRigidBody;
+
+        
 
         public void SetTriangleDataVB(CustomVertex.PositionTextured[] data)
         {
@@ -51,7 +54,7 @@ namespace TGC.Group.Model.Utils
 
             float radius = 30f;
             float mass = 0.75f;
-            var position = new TGCVector3(-50f, 0, -200f);
+            var position = new TGCVector3(-50f, 30, -200f);
             ball = BulletRigidBodyConstructor.CreateBall(radius, mass, position);
             ball.SetDamping(0.1f, 0.5f);
             ball.Restitution = 1f;
@@ -64,6 +67,19 @@ namespace TGC.Group.Model.Utils
             sphereMesh.updateValues();
             
             director = new TGCVector3(1, 0, 0);
+
+            //Cuerpo rigido de una capsula basica
+            position = new TGCVector3(0f, 0, 0);
+            bandicootRigidBody = BulletRigidBodyConstructor.CreateBox(new TGCVector3(1,1,1),mass,position,0,0,0,1);
+            
+            //Valores que podemos modificar a partir del RigidBody base
+            bandicootRigidBody.SetDamping(0.1f, 0f);
+            bandicootRigidBody.Restitution = 1f;
+            //bandicootRigidBody.Friction = 1;
+
+            //Agregamos el RidigBody al World
+            dynamicsWorld.AddRigidBody(bandicootRigidBody);
+
         }
 
         public void Update(TgcD3dInput input)
@@ -71,7 +87,16 @@ namespace TGC.Group.Model.Utils
             dynamicsWorld.StepSimulation(1 / 60f, 100);
             var strength = 0.5f;
             var angle = 5;
-
+/*
+            if (input.keyDown(Key.W))
+            {
+                //moving = true;
+                //Activa el comportamiento de la simulacion fisica para la capsula
+                bandicootRigidBody.ActivationState = ActivationState.ActiveTag;
+                //bandicootRigidBody.AngularVelocity = TGCVector3.Empty.ToBsVector;
+                bandicootRigidBody.ApplyCentralImpulse(-strength * new TGCVector3(0,0,1.3f).ToBsVector);
+            }
+*/
             if (input.keyDown(Key.I))
             {
                 ball.ActivationState = ActivationState.ActiveTag;

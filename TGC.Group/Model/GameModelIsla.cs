@@ -78,6 +78,7 @@ namespace TGC.Group.Model
             Bandicoot.RotateY(3.12f);
             Bandicoot.BoundingBox.setExtremes(pMin, pMax);
             Bandicoot.Move(0, 1, 830);
+            //Bandicoot.Position = TGCVector3.Empty;
 
             Parte1 = sceneLoader.loadSceneFromFile($"{MediaDir}/Nivel1-1-TgcScene.xml").Meshes;
             Parte2 = sceneLoader.loadSceneFromFile($"{MediaDir}/Nivel1-2-TgcScene.xml").Meshes;
@@ -196,6 +197,7 @@ namespace TGC.Group.Model
             */
 
             Bandicoot.Move(movimiento);
+            //Bandicoot.Transform = TGCMatrix.Translation(movimiento);
 
 
             if (saltando)

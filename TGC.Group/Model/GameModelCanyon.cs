@@ -9,6 +9,7 @@ using TGC.Core.SceneLoader;
 using TGC.Core.Terrain;
 using TGC.Group.Model.Utils;
 using TGC.Group.Camara;
+using System;
 
 namespace TGC.Group.Model
 {
@@ -30,6 +31,9 @@ namespace TGC.Group.Model
         public TgcThirdPersonCamera BandicootCamera { get ; set; }
 		public float DirectorAngle { get; set; }
         public TGCVector3 BandicootMovement { get; set; }
+        public TGCMatrix traslacion;
+        public TGCMatrix escala;
+        public TGCMatrix rotacion;
 
         /* Methods */
 
@@ -59,20 +63,25 @@ namespace TGC.Group.Model
         {
             var sceneLoader = new TgcSceneLoader();
             string path = $"{MediaDir}/crash/CRASH (2)-TgcScene.xml";
-            var pMin = new TGCVector3(-185f, 0, -100f);
-            var pMax = new TGCVector3(0, 225f, 0);
-            TGCMatrix escala;
-            TGCMatrix rotacion;
-
-            Bandicoot = sceneLoader.loadSceneFromFile(path).Meshes[0];
+            var pMin = new TGCVector3(-18.5f, 0, -10f);
+            var pMax = new TGCVector3(0, 22.5f, 0);
             
+            Bandicoot = sceneLoader.loadSceneFromFile(path).Meshes[0];
+
+            Bandicoot.AutoTransformEnable = false;
+
+
             escala = TGCMatrix.Scaling(new TGCVector3(0.1f, 0.1f, 0.1f));
-            rotacion = TGCMatrix.RotationYawPitchRoll(0, 3.12f, 0);
+            rotacion = TGCMatrix.RotationYawPitchRoll(3.12f, 0, 0);
 
-            Bandicoot.Transform = escala * rotacion;
+            Bandicoot.Position = new TGCVector3(9.25f, 11.75f, 5);
 
-            Bandicoot.Scale = new TGCVector3(.1f, .1f, .1f);
-            Bandicoot.RotateY (3.12f);
+            Bandicoot.Transform = escala * rotacion * TGCMatrix.Translation(Bandicoot.Position);
+
+            Console.WriteLine("posicion:" + Bandicoot.Position);
+
+            //Bandicoot.Scale = new TGCVector3(.1f, .1f, .1f);
+            //Bandicoot.RotateY (3.12f);
             
             Bandicoot.BoundingBox.setExtremes(pMin, pMax);
 
@@ -101,6 +110,7 @@ namespace TGC.Group.Model
             physics = new Physics();
             physics.SetTriangleDataVB(terrain.getData());
             physics.Init(MediaDir);
+            
         }
 
         public void ListenInputs()
@@ -147,7 +157,9 @@ namespace TGC.Group.Model
             //Multiplicar movimiento por velocidad y elapsedTime
             BandicootMovement *= MOVEMENT_SPEED * ElapsedTime;
 
-            Bandicoot.Move(BandicootMovement);
+            traslacion = TGCMatrix.Translation(BandicootMovement);
+
+            //Bandicoot.Move(BandicootMovement);
             if (IsJumping)
             {
                 Bandicoot.Move(0, JumpDirection * MOVEMENT_SPEED * ElapsedTime, 0);
@@ -165,7 +177,23 @@ namespace TGC.Group.Model
             }
 
             physics.Update(Input);
-           
+
+            if (Input.keyDown(Key.W))
+            {
+                //moving = true;
+                //Activa el comportamiento de la simulacion fisica para la capsula
+                physics.bandicootRigidBody.ActivationState = BulletSharp.ActivationState.ActiveTag;
+                //bandicootRigidBody.AngularVelocity = TGCVector3.Empty.ToBsVector;
+                physics.bandicootRigidBody.ApplyCentralImpulse(BandicootMovement.ToBsVector);
+            }
+/*
+            if (input.keyDown(Key.A))
+            {
+                director.TransformCoordinate(TGCMatrix.RotationY(-angle * 0.01f));
+                personaje.Transform = TGCMatrix.Translation(TGCVector3.Empty) * TGCMatrix.RotationY(-angle * 0.01f) * new TGCMatrix(capsuleRigidBody.InterpolationWorldTransform);
+                capsuleRigidBody.WorldTransform = personaje.Transform.ToBsMatrix;
+            }
+            */
             // Desplazar camara para seguir al personaje
             BandicootCamera.SetCamera(BandicootCamera.Position + new TGCVector3(BandicootMovement), anguloCamara);
 
@@ -185,13 +213,21 @@ namespace TGC.Group.Model
             //Dibuja un texto por pantalla
             DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText("Con clic izquierdo subimos la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
+            DrawText.drawText("La posicion del bandicoot es: " + TGCVector3.PrintVector3(Bandicoot.Position), 0, 40, Color.Black);
+            DrawText.drawText("La posicion del bandicoot es: " + physics.bandicootRigidBody.CenterOfMassPosition, 0, 50, Color.Black);
+
 
             if (BoundingBox)
             {
                 Bandicoot.BoundingBox.Render();
             }
 
-            Bandicoot.UpdateMeshTransform();
+
+            //Bandicoot.Transform = escala * rotacion * traslacion;
+            //Bandicoot.Transform = escala * rotacion * new TGCMatrix(physics.bandicootRigidBody.InterpolationWorldTransform);
+            Bandicoot.Transform = escala * rotacion * new TGCMatrix(physics.bandicootRigidBody.InterpolationWorldTransform);
+
+            //Bandicoot.UpdateMeshTransform();
             Bandicoot.Render();
             terrain.Render();
             physics.Render();
