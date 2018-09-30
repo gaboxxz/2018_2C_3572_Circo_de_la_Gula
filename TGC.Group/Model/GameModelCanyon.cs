@@ -31,8 +31,8 @@ namespace TGC.Group.Model
         public TgcThirdPersonCamera BandicootCamera { get ; set; }
 		public float DirectorAngle { get; set; }
         public TGCVector3 BandicootMovement { get; set; }
-        public TGCMatrix traslacion;
         public TGCMatrix escala;
+        public TGCMatrix traslacion;
         public TGCMatrix rotacion;
 
         /* Methods */
@@ -70,18 +70,15 @@ namespace TGC.Group.Model
 
             Bandicoot.AutoTransformEnable = false;
 
+            Bandicoot.Position = TGCVector3.Empty;
 
             escala = TGCMatrix.Scaling(new TGCVector3(0.1f, 0.1f, 0.1f));
             rotacion = TGCMatrix.RotationYawPitchRoll(3.12f, 0, 0);
-
-            Bandicoot.Position = new TGCVector3(9.25f, 11.75f, 5);
+            traslacion = TGCMatrix.Translation(Bandicoot.Position);
 
             Bandicoot.Transform = escala * rotacion * TGCMatrix.Translation(Bandicoot.Position);
 
             Console.WriteLine("posicion:" + Bandicoot.Position);
-
-            //Bandicoot.Scale = new TGCVector3(.1f, .1f, .1f);
-            //Bandicoot.RotateY (3.12f);
             
             Bandicoot.BoundingBox.setExtremes(pMin, pMax);
 
@@ -185,6 +182,8 @@ namespace TGC.Group.Model
                 physics.bandicootRigidBody.ActivationState = BulletSharp.ActivationState.ActiveTag;
                 //bandicootRigidBody.AngularVelocity = TGCVector3.Empty.ToBsVector;
                 physics.bandicootRigidBody.ApplyCentralImpulse(BandicootMovement.ToBsVector);
+                //physics.bandicootRigidBody.ApplyForce(BandicootMovement.ToBsVector, ;
+                //physics.bandicootRigidBody.ApplyImpulse(BandicootMovement.ToBsVector, (Bandicoot.Position + new TGCVector3(5, 5, 5)).ToBsVector);
             }
 /*
             if (input.keyDown(Key.A))
@@ -213,8 +212,8 @@ namespace TGC.Group.Model
             //Dibuja un texto por pantalla
             DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText("Con clic izquierdo subimos la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
-            DrawText.drawText("La posicion del bandicoot es: " + TGCVector3.PrintVector3(Bandicoot.Position), 0, 40, Color.Black);
-            DrawText.drawText("La posicion del bandicoot es: " + physics.bandicootRigidBody.CenterOfMassPosition, 0, 50, Color.Black);
+            DrawText.drawText("La posicion del bandicoot es: " + TGCVector3.PrintVector3(Bandicoot.Position), 0, 40, Color.OrangeRed);
+            DrawText.drawText("La posicion del bandicoot es: " + physics.bandicootRigidBody.CenterOfMassPosition, 0, 50, Color.OrangeRed);
 
 
             if (BoundingBox)

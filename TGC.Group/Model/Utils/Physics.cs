@@ -68,10 +68,10 @@ namespace TGC.Group.Model.Utils
             
             director = new TGCVector3(1, 0, 0);
 
-            //Cuerpo rigido de una capsula basica
-            position = new TGCVector3(0f, 0, 0);
-            bandicootRigidBody = BulletRigidBodyConstructor.CreateBox(new TGCVector3(1,1,1),mass,position,0,0,0,1);
-            
+            //Cuerpo rigido de una caja basica
+            position = new TGCVector3(0, 10, 0);
+            mass = 2;
+            bandicootRigidBody = BulletRigidBodyConstructor.CreateBox(new TGCVector3(20,10,20),mass,position,0,0,0,0);
             //Valores que podemos modificar a partir del RigidBody base
             bandicootRigidBody.SetDamping(0.1f, 0f);
             bandicootRigidBody.Restitution = 1f;
@@ -80,13 +80,15 @@ namespace TGC.Group.Model.Utils
             //Agregamos el RidigBody al World
             dynamicsWorld.AddRigidBody(bandicootRigidBody);
 
+
+            
         }
 
         public void Update(TgcD3dInput input)
         {
             dynamicsWorld.StepSimulation(1 / 60f, 100);
-            var strength = 0.5f;
-            var angle = 5;
+            var strength = 10f;
+            var angle = 0;
 /*
             if (input.keyDown(Key.W))
             {

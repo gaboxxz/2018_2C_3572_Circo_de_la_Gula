@@ -16,7 +16,7 @@ namespace TGC.Group.Model.Utils.Commands
         {
             if (model.Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
             {
-                model.Camara.SetCamera(model.Camara.Position + new TGCVector3(0, 10f, 0), model.Camara.LookAt);
+                model.BandicootCamera.SetCamera(model.BandicootCamera.Position + new TGCVector3(0, 10f, 0), model.BandicootCamera.LookAt);
             }
         }
     }
