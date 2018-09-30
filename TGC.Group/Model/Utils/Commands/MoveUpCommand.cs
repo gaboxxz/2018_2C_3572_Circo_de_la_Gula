@@ -25,7 +25,8 @@ namespace TGC.Group.Model.Utils.Commands
                 model.BandicootMovement = movement;
 
                 model.BandicootCamera.OffsetForward -= 1 * model.ElapsedTime;
-                model.BandicootCamera.Target = model.Bandicoot.Position;
+                
+                
             }
         }
     }

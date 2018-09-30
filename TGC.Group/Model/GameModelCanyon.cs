@@ -185,16 +185,17 @@ namespace TGC.Group.Model
                 //physics.bandicootRigidBody.ApplyForce(BandicootMovement.ToBsVector, ;
                 //physics.bandicootRigidBody.ApplyImpulse(BandicootMovement.ToBsVector, (Bandicoot.Position + new TGCVector3(5, 5, 5)).ToBsVector);
             }
-/*
-            if (input.keyDown(Key.A))
-            {
-                director.TransformCoordinate(TGCMatrix.RotationY(-angle * 0.01f));
-                personaje.Transform = TGCMatrix.Translation(TGCVector3.Empty) * TGCMatrix.RotationY(-angle * 0.01f) * new TGCMatrix(capsuleRigidBody.InterpolationWorldTransform);
-                capsuleRigidBody.WorldTransform = personaje.Transform.ToBsMatrix;
-            }
-            */
+            /*
+                        if (input.keyDown(Key.A))
+                        {
+                            director.TransformCoordinate(TGCMatrix.RotationY(-angle * 0.01f));
+                            personaje.Transform = TGCMatrix.Translation(TGCVector3.Empty) * TGCMatrix.RotationY(-angle * 0.01f) * new TGCMatrix(capsuleRigidBody.InterpolationWorldTransform);
+                            capsuleRigidBody.WorldTransform = personaje.Transform.ToBsMatrix;
+                        }
+                        */
             // Desplazar camara para seguir al personaje
-            BandicootCamera.SetCamera(BandicootCamera.Position + new TGCVector3(BandicootMovement), anguloCamara);
+            var posCamara = new TGCVector3(physics.bandicootRigidBody.CenterOfMassPosition);
+            BandicootCamera.Target = posCamara;
 
             PostUpdate();
         }
