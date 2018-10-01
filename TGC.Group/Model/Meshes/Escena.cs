@@ -24,7 +24,8 @@ namespace TGC.Group.Model.Meshes
             {
                 listaMeshes.Add(new Mesh(mesh));
             }
-
+            Console.WriteLine(meshes.Count);
+            Console.WriteLine(listaMeshes.Count);
             return listaMeshes;
         }
         
@@ -38,6 +39,8 @@ namespace TGC.Group.Model.Meshes
             }
             
         }
+
+        
 
         public void LimpiarEscena()
         {

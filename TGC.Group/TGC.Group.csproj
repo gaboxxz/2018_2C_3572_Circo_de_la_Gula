@@ -103,6 +103,7 @@
     <Compile Include="Model\GameModelCanyon.cs" />
     <Compile Include="Model\GameModelIsla.cs" />
     <Compile Include="Model\GameModelLevel1.cs" />
+    <Compile Include="Model\Meshes\MovingMesh.cs" />
     <Compile Include="Model\Meshes\Escena.cs" />
     <Compile Include="Model\Meshes\Mesh.cs" />
     <Compile Include="Model\Meshes\MeshFijo.cs" />

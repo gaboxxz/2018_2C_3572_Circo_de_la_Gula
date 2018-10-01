@@ -27,5 +27,10 @@ namespace TGC.Group.Model.Meshes
         {
 
         }
+
+        public void Move(TgcMesh item,float movement)
+        {
+
+        }
     }
 }

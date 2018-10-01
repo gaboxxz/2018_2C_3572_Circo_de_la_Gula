@@ -13,6 +13,7 @@ namespace TGC.Group.Model.Meshes
 
         void ExecuteCollision(TgcMesh item, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento);
         void ExecuteCollision(TgcMesh item);
+        void Move(TgcMesh item, float movimiento);
 
 
     }

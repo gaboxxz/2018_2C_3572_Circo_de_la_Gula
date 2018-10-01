@@ -39,6 +39,7 @@ namespace TGC.Group.Model
 
 
         private List<Mesh> ListaMeshes = new List<Mesh>();
+        private List<Mesh> ListaMeshes2 = new List<Mesh>();
 
         private TgcMesh Bandicoot { get; set; }
         
@@ -86,13 +87,39 @@ namespace TGC.Group.Model
 
             //Parte2 = sceneLoader.loadSceneFromFile($"{MediaDir}/room-with-fruit3-TgcScene-TgcScene.xml").Meshes;
 
+            
 
-            var unaEscena = new Escena();
+            ListaMeshes = new Escena().ObtenerMeshesDeEscena($"{MediaDir}/Nivel1-1-TgcScene.xml");
+            
 
-            ListaMeshes = unaEscena.ObtenerMeshesDeEscena($"{MediaDir}/Nivel1-1-TgcScene.xml");
-            //Escena.AddRange(new Escena().ObtenerMeshesDeEscena($"{MediaDir}/room-with-fruit3-TgcScene-TgcScene.xml"));
+            ListaMeshes2 = new Escena().ObtenerMeshesDeEscena($"{MediaDir}/Nivel1-2-TgcScene.xml");
+            
 
-            unaEscena.AgregarMeshesDeEscena(ListaMeshes, $"{MediaDir}/Nivel1-2-TgcScene.xml");
+
+            foreach (Mesh item in ListaMeshes2)
+            {
+                item.Malla.Move(0, 0, -1290f);
+                //item.Malla.setColor(Color.Black);
+            }
+            
+
+            ListaMeshes.AddRange(ListaMeshes2);
+
+
+            ListaMeshes2 = new Escena().ObtenerMeshesDeEscena($"{MediaDir}/movingPlatform-as1-TgcScene.xml");
+
+            foreach (Mesh item in ListaMeshes2)
+            {
+                Console.WriteLine(item.Malla.Name);
+                item.Malla.Move(0, -10, -150);
+                //item.Malla.setColor(Color.Black);
+            }
+
+            ListaMeshes.AddRange(ListaMeshes2);
+
+            Console.WriteLine(Parte2.Count);
+            Console.WriteLine(ListaMeshes.Count);
+
 
             foreach (var mesh in ListaMeshes)
             {
@@ -188,16 +215,11 @@ namespace TGC.Group.Model
             //Multiplicar movimiento por velocidad y elapsedTime
             movimiento *= MOVEMENT_SPEED * ElapsedTime;
 
-
-
-            /*
-            //Crear manejador de colisiones
-            collisionManager = new SphereCollisionManager();
-            collisionManager.GravityEnabled = true;
-            */
+         
 
             Bandicoot.Move(movimiento);
             //Bandicoot.Transform = TGCMatrix.Translation(movimiento);
+
 
 
             if (saltando)
@@ -217,9 +239,15 @@ namespace TGC.Group.Model
                         if (!item.EsFruta())
                         {
                             //Bandicoot.Transform = TGCMatrix.Translation(-movimiento.X, movimiento.Y / 2 + ((item.Malla.BoundingBox.PMax.Y / 2) + 1), -movimiento.Z);
+                            //movimiento = new TGCVector3(0, 1 * MOVEMENT_SPEED * ElapsedTime + 0.1f, 0); ;
                             Bandicoot.Move(0, 1 * MOVEMENT_SPEED * ElapsedTime + 0.1f, 0);
+
+                            //item.ExecuteCollision(Bandicoot,Camara,movimiento);
+                            
                             objetoColisionado = item;
                             posBaseBandicoot = item.Malla.BoundingBox.PMax.Y;
+                            //if (item.isUpperCollision(Bandicoot, posBaseBandicoot))
+                            //    item.ExecuteJumpCollision(Bandicoot, Camara, movimiento);
                             saltando = false;
                             break;
                         }
@@ -234,9 +262,10 @@ namespace TGC.Group.Model
                     
                     if(objetoColisionado.isUpperCollision(Bandicoot, posBaseBandicoot) && objetoColisionado.Malla != null)
                     {
-                        Bandicoot.Move(0, -1 * MOVEMENT_SPEED * ElapsedTime + 0.1f, 0);
+                        Bandicoot.Move(0, 1 * MOVEMENT_SPEED * ElapsedTime + 0.1f, 0);
                         posBaseBandicoot = posInicialBandicoot;
                         saltando = true;
+                        objetoColisionado.ExecuteJumpCollision(Bandicoot, Camara, movimiento);
                     }
 
                 }
@@ -268,6 +297,13 @@ namespace TGC.Group.Model
                 {
                     continue;
                 }
+
+                if(mesh.Malla.Name.Contains("movingPlatform"))
+                {
+                    mesh.Move(MOVEMENT_SPEED * ElapsedTime);
+                    //mesh.Malla.Transform = 
+                }
+
                 if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.Malla.BoundingBox))
                 {
                     //comment = mesh.GetType().ToString();

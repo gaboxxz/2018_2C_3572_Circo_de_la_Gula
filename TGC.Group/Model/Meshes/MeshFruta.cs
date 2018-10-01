@@ -28,7 +28,6 @@ namespace TGC.Group.Model.Meshes
         {
             Malla.Enabled = false;
             Malla.BoundingBox = null;
-            Console.WriteLine("prueba colision fruta");
         }
 
         public void ExecuteJumpCollision(TgcMesh item, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
@@ -40,5 +39,9 @@ namespace TGC.Group.Model.Meshes
         {
             
         }*/
+        public void Move(TgcMesh item, float movement)
+        {
+
+        }
     }
 }
