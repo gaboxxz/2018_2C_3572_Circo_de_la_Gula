@@ -17,7 +17,10 @@ namespace TGC.Group.Model.Utils.Commands
             {
                 model.IsJumping = true;
                 model.JumpDirection = 1;
+                model.BandicootMovement = new Core.Mathematica.TGCVector3(0, 100, 0);
             }
+            else
+                model.IsJumping = false;
         }
     }
 }

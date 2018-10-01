@@ -16,7 +16,8 @@ namespace TGC.Group.Model.Utils.Commands
         {
             if (model.Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_RIGHT))
             {
-                model.Camara.SetCamera(model.Camara.Position + new TGCVector3(0, -10f, 0), model.Camara.LookAt);
+                model.BandicootCamera.OffsetHeight -= 5;
+                model.BandicootCamera.OffsetForward -= 1;
             }
         }
     }

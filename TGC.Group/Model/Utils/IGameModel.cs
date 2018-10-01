@@ -19,5 +19,6 @@ namespace TGC.Group.Model.Utils
         TGCVector3 BandicootMovement { get; set; }
         bool IsJumping { get; set; }
         int JumpDirection { get; set; }
+        TGCMatrix Rotation { get; set; }
     }
 }

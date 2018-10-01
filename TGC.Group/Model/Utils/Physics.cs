@@ -12,7 +12,7 @@ using TGC.Core.Textures;
 
 namespace TGC.Group.Model.Utils
 {
-    internal class Physics
+    public class Physics
     {
         // Physics configuration objects
         private DiscreteDynamicsWorld dynamicsWorld;
@@ -46,11 +46,13 @@ namespace TGC.Group.Model.Utils
             overlappingPairCache = new DbvtBroadphase();
             dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
 
-            var gravity = new TGCVector3(0, -100f, 0).ToBsVector;
+            var gravity = new TGCVector3(0, -60f, 0).ToBsVector;
             dynamicsWorld.Gravity = gravity;
 
-            var meshRigidBody = BulletRigidBodyConstructor.CreateSurfaceFromHeighMap(triangleDataVB);
-            dynamicsWorld.AddRigidBody(meshRigidBody);
+            var heighMap = BulletRigidBodyConstructor.CreateSurfaceFromHeighMap(triangleDataVB);
+            heighMap.Restitution = 0;
+
+            dynamicsWorld.AddRigidBody(heighMap);
 
             float radius = 30f;
             float mass = 0.75f;
@@ -71,11 +73,11 @@ namespace TGC.Group.Model.Utils
             //Cuerpo rigido de una caja basica
             position = new TGCVector3(0, 10, 0);
             mass = 2;
-            bandicootRigidBody = BulletRigidBodyConstructor.CreateBox(new TGCVector3(20,10,20),mass,position,0,0,0,0);
+            bandicootRigidBody = BulletRigidBodyConstructor.CreateBox(new TGCVector3(20,10,20),mass,position,0,0,0,0.3f);
             //Valores que podemos modificar a partir del RigidBody base
-            bandicootRigidBody.SetDamping(0.1f, 0f);
-            bandicootRigidBody.Restitution = 1f;
-            //bandicootRigidBody.Friction = 1;
+            bandicootRigidBody.SetDamping(0f, 0f);
+            bandicootRigidBody.Restitution = 0f;
+            bandicootRigidBody.InvInertiaDiagLocal = TGCVector3.Empty.ToBsVector;
 
             //Agregamos el RidigBody al World
             dynamicsWorld.AddRigidBody(bandicootRigidBody);

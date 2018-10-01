@@ -17,10 +17,9 @@ namespace TGC.Group.Model
     {
         /* Attributes */
         private float posInicialBandicoot;
-        private float alturaMaximaSalto = 20f;
         private const float MOVEMENT_SPEED = 100f;
         private TgcSimpleTerrain terrain;
-        private Physics physics;
+        
 
         // Properties
         public bool IsJumping { get; set; }
@@ -31,9 +30,10 @@ namespace TGC.Group.Model
         public TgcThirdPersonCamera BandicootCamera { get ; set; }
 		public float DirectorAngle { get; set; }
         public TGCVector3 BandicootMovement { get; set; }
-        public TGCMatrix escala;
-        public TGCMatrix traslacion;
-        public TGCMatrix rotacion;
+        public TGCMatrix Scale { get; set; }
+        public TGCMatrix Translation { get; set; }
+        public TGCMatrix Rotation { get; set; }
+        public Physics Physics { get; set; }
 
         /* Methods */
 
@@ -72,11 +72,11 @@ namespace TGC.Group.Model
 
             Bandicoot.Position = TGCVector3.Empty;
 
-            escala = TGCMatrix.Scaling(new TGCVector3(0.1f, 0.1f, 0.1f));
-            rotacion = TGCMatrix.RotationYawPitchRoll(3.12f, 0, 0);
-            traslacion = TGCMatrix.Translation(Bandicoot.Position);
+            Scale = TGCMatrix.Scaling(new TGCVector3(0.1f, 0.1f, 0.1f));
+            Rotation = TGCMatrix.RotationYawPitchRoll(3.12f, 0, 0);
+            Translation = TGCMatrix.Translation(Bandicoot.Position);
 
-            Bandicoot.Transform = escala * rotacion * TGCMatrix.Translation(Bandicoot.Position);
+            Bandicoot.Transform = Scale * Rotation * TGCMatrix.Translation(Bandicoot.Position);
 
             Console.WriteLine("posicion:" + Bandicoot.Position);
             
@@ -89,12 +89,7 @@ namespace TGC.Group.Model
 
         public void InitCamera()
         {
-            /* Suelen utilizarse objetos que manejan el comportamiento de la camara.
-               Lo que en realidad necesitamos gráficamente es una matriz de View.
-               El framework maneja una cámara estática, pero debe ser inicializada.
-               Internamente el framework construye la matriz de view con estos dos vectores.
-               Luego en nuestro juego tendremos que crear una cámara que cambie 
-               la matriz de view con variables como movimientos o animaciones de escenas. */
+            
             BandicootCamera = new TgcThirdPersonCamera(Bandicoot.Position, 50f, 150f);
             Camara = BandicootCamera;
 			//var postition = new TGCVector3(-5, 20, 50);
@@ -104,9 +99,9 @@ namespace TGC.Group.Model
         }
 
         public void InitPhysics() {
-            physics = new Physics();
-            physics.SetTriangleDataVB(terrain.getData());
-            physics.Init(MediaDir);
+            Physics = new Physics();
+            Physics.SetTriangleDataVB(terrain.getData());
+            Physics.Init(MediaDir);
             
         }
 
@@ -154,47 +149,15 @@ namespace TGC.Group.Model
             //Multiplicar movimiento por velocidad y elapsedTime
             BandicootMovement *= MOVEMENT_SPEED * ElapsedTime;
 
-            traslacion = TGCMatrix.Translation(BandicootMovement);
+            Translation = TGCMatrix.Translation(BandicootMovement);
 
-            //Bandicoot.Move(BandicootMovement);
-            if (IsJumping)
-            {
-                Bandicoot.Move(0, JumpDirection * MOVEMENT_SPEED * ElapsedTime, 0);
+            Physics.Update(Input);
 
-                //Si la posicion en Y es mayor a la maxima altura. 
-                if (Bandicoot.Position.Y > alturaMaximaSalto)
-                {
-                    JumpDirection = -1;
-                }
+            Physics.bandicootRigidBody.ActivationState = BulletSharp.ActivationState.ActiveTag;
+            Physics.bandicootRigidBody.ApplyCentralImpulse(BandicootMovement.ToBsVector);
 
-                if (Bandicoot.Position.Y <= posInicialBandicoot)
-                {
-                    IsJumping = false;
-                }
-            }
-
-            physics.Update(Input);
-
-            if (Input.keyDown(Key.W))
-            {
-                //moving = true;
-                //Activa el comportamiento de la simulacion fisica para la capsula
-                physics.bandicootRigidBody.ActivationState = BulletSharp.ActivationState.ActiveTag;
-                //bandicootRigidBody.AngularVelocity = TGCVector3.Empty.ToBsVector;
-                physics.bandicootRigidBody.ApplyCentralImpulse(BandicootMovement.ToBsVector);
-                //physics.bandicootRigidBody.ApplyForce(BandicootMovement.ToBsVector, ;
-                //physics.bandicootRigidBody.ApplyImpulse(BandicootMovement.ToBsVector, (Bandicoot.Position + new TGCVector3(5, 5, 5)).ToBsVector);
-            }
-            /*
-                        if (input.keyDown(Key.A))
-                        {
-                            director.TransformCoordinate(TGCMatrix.RotationY(-angle * 0.01f));
-                            personaje.Transform = TGCMatrix.Translation(TGCVector3.Empty) * TGCMatrix.RotationY(-angle * 0.01f) * new TGCMatrix(capsuleRigidBody.InterpolationWorldTransform);
-                            capsuleRigidBody.WorldTransform = personaje.Transform.ToBsMatrix;
-                        }
-                        */
             // Desplazar camara para seguir al personaje
-            var posCamara = new TGCVector3(physics.bandicootRigidBody.CenterOfMassPosition);
+            var posCamara = new TGCVector3(Physics.bandicootRigidBody.CenterOfMassPosition);
             BandicootCamera.Target = posCamara;
 
             PostUpdate();
@@ -214,7 +177,7 @@ namespace TGC.Group.Model
             DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText("Con clic izquierdo subimos la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
             DrawText.drawText("La posicion del bandicoot es: " + TGCVector3.PrintVector3(Bandicoot.Position), 0, 40, Color.OrangeRed);
-            DrawText.drawText("La posicion del bandicoot es: " + physics.bandicootRigidBody.CenterOfMassPosition, 0, 50, Color.OrangeRed);
+            DrawText.drawText("La posicion del bandicoot es: " + Physics.bandicootRigidBody.CenterOfMassPosition, 0, 50, Color.OrangeRed);
 
 
             if (BoundingBox)
@@ -225,12 +188,12 @@ namespace TGC.Group.Model
 
             //Bandicoot.Transform = escala * rotacion * traslacion;
             //Bandicoot.Transform = escala * rotacion * new TGCMatrix(physics.bandicootRigidBody.InterpolationWorldTransform);
-            Bandicoot.Transform = escala * rotacion * new TGCMatrix(physics.bandicootRigidBody.InterpolationWorldTransform);
+            Bandicoot.Transform = Scale * Rotation * new TGCMatrix(Physics.bandicootRigidBody.InterpolationWorldTransform);
 
             //Bandicoot.UpdateMeshTransform();
             Bandicoot.Render();
             terrain.Render();
-            physics.Render();
+            Physics.Render();
           
             // Finaliza el render y presenta en pantalla, al igual que el preRender se debe usar para casos 
             // puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
@@ -244,7 +207,7 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             Bandicoot.Dispose();
-            physics.Dispose();
+            Physics.Dispose();
             terrain.Dispose();
         }
     }
