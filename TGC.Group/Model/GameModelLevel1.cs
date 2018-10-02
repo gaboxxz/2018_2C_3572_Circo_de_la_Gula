@@ -18,14 +18,11 @@ namespace TGC.Group.Model
 {
     public class GameModelLevel1 : TgcExample, IGameModel
     {
-
-        //Atributos
-        private float posInicialBandicoot;
+        // Atributtes
         private const float alturaMaximaSalto = 70f;
         private const float MOVEMENT_SPEED = 100f;
-        private TgcSimpleTerrain terrain;
 
-        //Properties
+        // Properties
         public bool IsJumping { get; set; }
         public int JumpDirection { get; set; }
         private InputHandler handler;
@@ -35,15 +32,12 @@ namespace TGC.Group.Model
         public float DirectorAngle { get; set; }
         public TGCVector3 BandicootMovement { get; set; }
         public TGCMatrix Rotation { get; set; }
-        public Physics Physics { get; set;
+        public Physics Physics { get; set;}
 
-        }
-        //pisos, paredes y otros meshes
         private List<TgcMesh> Parte1 = new List<TgcMesh>();
         private List<TgcMesh> Parte2 = new List<TgcMesh>();
 
         private List<Mesh> Lista = new List<Mesh>();
-
 
         public GameModelLevel1(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
@@ -52,7 +46,6 @@ namespace TGC.Group.Model
             Description = Game.Default.Description;
             handler = new InputHandler(this);
         }
-
 
         public void InitMeshes()
         {
@@ -77,35 +70,24 @@ namespace TGC.Group.Model
 
             Lista = new Escena().ObtenerMeshesDeEscena($"{MediaDir}/Level_1/saveLevel1MeshCreator-TgcScene.xml");
 
-            
-
             foreach (Mesh Item in Lista)
             {
                 Item.Malla.Move(0, 0, -1090f);
             }
-
         }
 
         public void InitCamera()
         {
-
             BandicootCamera = new TgcThirdPersonCamera(Bandicoot.Position, 50f, 150f);
             Camara = BandicootCamera;
-            //var postition = new TGCVector3(-5, 20, 50);
-            //var lookAt = Bandicoot.Position;
-
-            // Camara.SetCamera(postition, lookAt);
         }
 
         public void InitPhysics()
         {
             Physics = new Physics();
-            Physics.SetTriangleDataVB(terrain.getData());
+            Physics.UsingHeightmap = false;
             Physics.Init(MediaDir);
-
         }
-
-
 
         public void ListenInputs()
         {
@@ -124,13 +106,11 @@ namespace TGC.Group.Model
         public override void Init()
         {
             var d3dDevice = D3DDevice.Instance.Device;
-
             
             InitMeshes();
             InitCamera();
             InitPhysics();
         }
-
 
         public override void Update()
         {
@@ -140,14 +120,10 @@ namespace TGC.Group.Model
 
             ListenInputs();
 
-            //Posicion original del mesh principal (o sea del bandicoot)
             var originalPos = Bandicoot.Position;
             anguloCamara = Bandicoot.Position;
 
-            //Multiplicar movimiento por velocidad y elapsedTime
             BandicootMovement *= MOVEMENT_SPEED * ElapsedTime;
-
-            //Translation = TGCMatrix.Translation(BandicootMovement);
 
             Physics.Update(Input);
 
@@ -164,8 +140,8 @@ namespace TGC.Group.Model
                 {
                     mesh.ExecuteCollision(Bandicoot, Camara, BandicootMovement);
                 }
-
             }
+
             Lista.RemoveAll(mesh => mesh.Malla.BoundingBox == null);
    
             PostUpdate();
@@ -197,7 +173,6 @@ namespace TGC.Group.Model
             {
                 item.RenderMesh();
             }
-            
 
             if (BoundingBox)
             {
@@ -206,8 +181,6 @@ namespace TGC.Group.Model
                 {
                     item.RenderBoundingBox();
                 }
-
-
             }
             // Finaliza el render y presenta en pantalla, al igual que el preRender se debe usar para casos 
             // puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene

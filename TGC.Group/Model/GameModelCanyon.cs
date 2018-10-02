@@ -19,7 +19,6 @@ namespace TGC.Group.Model
         private float posInicialBandicoot;
         private const float MOVEMENT_SPEED = 100f;
         private TgcSimpleTerrain terrain;
-        
 
         // Properties
         public bool IsJumping { get; set; }
@@ -89,20 +88,15 @@ namespace TGC.Group.Model
 
         public void InitCamera()
         {
-            
             BandicootCamera = new TgcThirdPersonCamera(Bandicoot.Position, 50f, 150f);
             Camara = BandicootCamera;
-			//var postition = new TGCVector3(-5, 20, 50);
-            //var lookAt = Bandicoot.Position;
-
-            // Camara.SetCamera(postition, lookAt);
         }
 
         public void InitPhysics() {
             Physics = new Physics();
+            Physics.UsingHeightmap = true;
             Physics.SetTriangleDataVB(terrain.getData());
             Physics.Init(MediaDir);
-            
         }
 
         public void ListenInputs()
