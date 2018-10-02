@@ -12,10 +12,21 @@ namespace TGC.Group.Model.Meshes
     class MovingMesh : TipoMesh
     {
 
-        private const float movingRange = 100f;
+        private const float movingRange = 300f;
 
         private TGCVector3 director;
         private float moved;
+
+        public MovingMesh(TgcMesh mesh)
+        {
+            if (mesh.Name.Contains("X"))
+                director.X = 1;
+            if (mesh.Name.Contains("Y"))
+                director.Y = 1;
+            if (mesh.Name.Contains("Z"))
+                director.Z = 1;
+
+        }
 
         public void ExecuteCollision(TgcMesh item, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
         {
@@ -34,13 +45,13 @@ namespace TGC.Group.Model.Meshes
             
         }
 
-        public void ExecuteJumpCollision(TgcMesh MeshColisionado, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
+        public void ExecuteJumpCollision(TgcMesh MeshColisionado, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento, float realTimeMovement)
         {
-            bandicoot.Move(director);
+            //bandicoot.Move(movimiento);
             var anguloCamara = bandicoot.Position;
-            this.Move(bandicoot, 100 * 0.1f);
+            this.Move(bandicoot, realTimeMovement*2);
             camara.SetCamera((camara.Position - movimiento), anguloCamara);
-            Console.WriteLine("colision movingMesh");  
+            //Console.WriteLine("colision movingMesh");
         }
 
         public void Move(TgcMesh mesh, float movimiento)

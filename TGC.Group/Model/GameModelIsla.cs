@@ -42,7 +42,7 @@ namespace TGC.Group.Model
         private List<Mesh> ListaMeshes2 = new List<Mesh>();
 
         private TgcMesh Bandicoot { get; set; }
-        
+
         private Mesh objetoColisionado = null;
 
         private bool BoundingBox { get; set; }
@@ -87,13 +87,13 @@ namespace TGC.Group.Model
 
             //Parte2 = sceneLoader.loadSceneFromFile($"{MediaDir}/room-with-fruit3-TgcScene-TgcScene.xml").Meshes;
 
-            
+
 
             ListaMeshes = new Escena().ObtenerMeshesDeEscena($"{MediaDir}/Nivel1-1-TgcScene.xml");
-            
+
 
             ListaMeshes2 = new Escena().ObtenerMeshesDeEscena($"{MediaDir}/Nivel1-2-TgcScene.xml");
-            
+
 
 
             foreach (Mesh item in ListaMeshes2)
@@ -101,7 +101,7 @@ namespace TGC.Group.Model
                 item.Malla.Move(0, 0, -1290f);
                 //item.Malla.setColor(Color.Black);
             }
-            
+
 
             ListaMeshes.AddRange(ListaMeshes2);
 
@@ -111,7 +111,7 @@ namespace TGC.Group.Model
             foreach (Mesh item in ListaMeshes2)
             {
                 Console.WriteLine(item.Malla.Name);
-                item.Malla.Move(0, -10, -150);
+                item.Malla.Move(0, -10, -60);
                 //item.Malla.setColor(Color.Black);
             }
 
@@ -205,7 +205,7 @@ namespace TGC.Group.Model
             {
                 saltando = true;
                 direccionSalto = 1;
-               //Bandicoot.Move(0, direccionSalto * MOVEMENT_SPEED * ElapsedTime, 0);
+                //Bandicoot.Move(0, direccionSalto * MOVEMENT_SPEED * ElapsedTime, 0);
             }
 
             //Posicion original del mesh principal (o sea del bandicoot)
@@ -215,7 +215,7 @@ namespace TGC.Group.Model
             //Multiplicar movimiento por velocidad y elapsedTime
             movimiento *= MOVEMENT_SPEED * ElapsedTime;
 
-         
+
 
             Bandicoot.Move(movimiento);
             //Bandicoot.Transform = TGCMatrix.Translation(movimiento);
@@ -230,9 +230,9 @@ namespace TGC.Group.Model
                 //Si la posicion en Y es mayor a la maxima altura. 
                 if (Bandicoot.Position.Y > alturaMaximaSalto)
                 {
-                        direccionSalto = -1;
+                    direccionSalto = -1;
                 }
-               foreach (var item in ListaMeshes)
+                foreach (var item in ListaMeshes)
                 {
                     if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, item.Malla.BoundingBox))
                     {
@@ -240,12 +240,16 @@ namespace TGC.Group.Model
                         {
                             //Bandicoot.Transform = TGCMatrix.Translation(-movimiento.X, movimiento.Y / 2 + ((item.Malla.BoundingBox.PMax.Y / 2) + 1), -movimiento.Z);
                             //movimiento = new TGCVector3(0, 1 * MOVEMENT_SPEED * ElapsedTime + 0.1f, 0); ;
-                            Bandicoot.Move(0, 1 * MOVEMENT_SPEED * ElapsedTime + 0.1f, 0);
+                            //Bandicoot.Move(0, 1 * MOVEMENT_SPEED * ElapsedTime + 0.1f, 0);
 
                             //item.ExecuteCollision(Bandicoot,Camara,movimiento);
-                            
+                            if (item.isUpperCollision(Bandicoot, posBaseBandicoot))
+                            {
+                                Bandicoot.Position = new TGCVector3(Bandicoot.Position.X, item.Malla.BoundingBox.PMax.Y + 0.05f, Bandicoot.Position.Z);
+
+                                posBaseBandicoot = item.Malla.BoundingBox.PMax.Y;
+                            }
                             objetoColisionado = item;
-                            posBaseBandicoot = item.Malla.BoundingBox.PMax.Y;
                             //if (item.isUpperCollision(Bandicoot, posBaseBandicoot))
                             //    item.ExecuteJumpCollision(Bandicoot, Camara, movimiento);
                             saltando = false;
@@ -259,14 +263,20 @@ namespace TGC.Group.Model
                 if (Bandicoot.Position.Y > posInicialBandicoot && !objetoColisionado.EsFruta())
                 {
                     //saltando = false;
-                    
-                    if(objetoColisionado.isUpperCollision(Bandicoot, posBaseBandicoot) && objetoColisionado.Malla != null)
+
+                    if (objetoColisionado.isUpperCollision(Bandicoot, posBaseBandicoot) && objetoColisionado.Malla != null)
                     {
-                        Bandicoot.Move(0, 1 * MOVEMENT_SPEED * ElapsedTime + 0.1f, 0);
-                        posBaseBandicoot = posInicialBandicoot;
+                        //Bandicoot.Move(0, 1 * MOVEMENT_SPEED * ElapsedTime + 0.1f, 0);
+                        Bandicoot.Position = new TGCVector3(Bandicoot.Position.X, objetoColisionado.Malla.BoundingBox.PMax.Y + 0.05f, Bandicoot.Position.Z);
                         saltando = true;
-                        objetoColisionado.ExecuteJumpCollision(Bandicoot, Camara, movimiento);
+                        //var traslacion = new TGCVector3()
+                        //movimiento = new TGCVector3(0, 0, MOVEMENT_SPEED * ElapsedTime);
+                        objetoColisionado.ExecuteJumpCollision(Bandicoot, Camara, movimiento, MOVEMENT_SPEED * ElapsedTime);
+                        // objetoColisionado.tipo.Move(Bandicoot, MOVEMENT_SPEED * ElapsedTime);
+
                     }
+                    else
+                        posBaseBandicoot = posInicialBandicoot;
 
                 }
             }
@@ -298,11 +308,12 @@ namespace TGC.Group.Model
                     continue;
                 }
 
-                if(mesh.Malla.Name.Contains("movingPlatform"))
+                if (mesh.Malla.Name.Contains("movingPlatform"))
                 {
                     mesh.Move(MOVEMENT_SPEED * ElapsedTime);
                     //mesh.Malla.Transform = 
                 }
+
 
                 if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.Malla.BoundingBox))
                 {
@@ -414,12 +425,16 @@ namespace TGC.Group.Model
         {
             Bandicoot.Dispose();
             terrain.Dispose();
+            foreach (Mesh item in ListaMeshes)
+            {
+                item.Malla.Dispose();
+            }
         }
 
-        
+
     }
 
 
-    
+
 
 }

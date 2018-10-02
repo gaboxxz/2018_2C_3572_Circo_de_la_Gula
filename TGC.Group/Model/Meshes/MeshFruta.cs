@@ -30,7 +30,7 @@ namespace TGC.Group.Model.Meshes
             Malla.BoundingBox = null;
         }
 
-        public void ExecuteJumpCollision(TgcMesh item, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
+        public void ExecuteJumpCollision(TgcMesh item, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento, float realTimeMovement)
         {
             throw new NotImplementedException();
         }
