@@ -21,7 +21,7 @@ namespace TGC.Group.Model
         // Atributtes
         private const float alturaMaximaSalto = 70f;
         private const float MOVEMENT_SPEED = 100f;
-
+        private float posInicialBandicoot;
         // Properties
         public bool IsJumping { get; set; }
         public int JumpDirection { get; set; }
@@ -33,6 +33,8 @@ namespace TGC.Group.Model
         public TGCVector3 BandicootMovement { get; set; }
         public TGCMatrix Rotation { get; set; }
         public Physics Physics { get; set;}
+        public TGCMatrix Scale { get; set; }
+        public TGCMatrix Translation { get; set; }
 
         private List<TgcMesh> Parte1 = new List<TgcMesh>();
         private List<TgcMesh> Parte2 = new List<TgcMesh>();
@@ -57,8 +59,28 @@ namespace TGC.Group.Model
             Bandicoot = sceneLoader.loadSceneFromFile(path).Meshes[0];
             Bandicoot.Scale = new TGCVector3(0.15f, 0.15f, 0.15f);
             Bandicoot.RotateY(3.12f);
+
+
+            Bandicoot.AutoTransformEnable = false;
+
+            Bandicoot.Position = (new TGCVector3(0, 0, 0));
+
+            Scale = TGCMatrix.Scaling(new TGCVector3(0.1f, 0.1f, 0.1f));
+            Rotation = TGCMatrix.RotationYawPitchRoll(3.12f, 0, 0);
+            Translation = TGCMatrix.Translation(Bandicoot.Position);
+
+            Bandicoot.Transform = Scale * Rotation * TGCMatrix.Translation(Bandicoot.Position);
+
+            Console.WriteLine("posicion:" + Bandicoot.Position);
+
             Bandicoot.BoundingBox.setExtremes(pMin, pMax);
-            Bandicoot.Move(100, 1, 830);
+
+            posInicialBandicoot = Bandicoot.Position.Y;
+            DirectorAngle = FastMath.ToRad(180);
+            JumpDirection = 1;
+
+
+
 
             Parte1 = sceneLoader.loadSceneFromFile($"{MediaDir}/Level_1/saveLevel1MeshCreator-TgcScene.xml").Meshes;
             // Parte2 = sceneLoader.loadSceneFromFile($"{MediaDir}/Nivel1-2-TgcScene.xml").Meshes;
