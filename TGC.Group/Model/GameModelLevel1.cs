@@ -88,13 +88,24 @@ namespace TGC.Group.Model
 
         public void InitCamera()
         {
+
             BandicootCamera = new TgcThirdPersonCamera(Bandicoot.Position, 50f, 150f);
             Camara = BandicootCamera;
-            
-            //var postition = Bandicoot.Position + (new TGCVector3(0, 100, 120));
-            //var lookAt = Bandicoot.Position + new TGCVector3(0, 10, 0);
-            //Camara.SetCamera(postition, lookAt);
+            //var postition = new TGCVector3(-5, 20, 50);
+            //var lookAt = Bandicoot.Position;
+
+            // Camara.SetCamera(postition, lookAt);
         }
+
+        public void InitPhysics()
+        {
+            Physics = new Physics();
+            Physics.SetTriangleDataVB(terrain.getData());
+            Physics.Init(MediaDir);
+
+        }
+
+
 
         public void ListenInputs()
         {
@@ -112,98 +123,41 @@ namespace TGC.Group.Model
 
         public override void Init()
         {
-            //Device de DirectX para crear primitivas.
             var d3dDevice = D3DDevice.Instance.Device;
 
             
             InitMeshes();
             InitCamera();
-
-            posInicialBandicoot = Bandicoot.Position.Y;
+            InitPhysics();
         }
 
-        
+
         public override void Update()
         {
             PreUpdate();
+
             var anguloCamara = TGCVector3.Empty;
 
             ListenInputs();
 
-           /* // Capturar Input teclado utilizado para movimiento 
-            var anguloCamara = TGCVector3.Empty;
-            var movimiento = TGCVector3.Empty;
-
-            var lastPos = Bandicoot.Position;
-
-            if (Input.keyPressed(Key.F))
-            {
-                BoundingBox = !BoundingBox;
-            }
-
-            // movimiento lateral
-            if (Input.keyDown(Key.Left) || Input.keyDown(Key.A))
-            {
-                movimiento.X = 1;
-            }
-            else if (Input.keyDown(Key.Right) || Input.keyDown(Key.D))
-            {
-                movimiento.X = -1;
-            }
-
-            //Movernos adelante y atras, sobre el eje Z.
-            if (Input.keyDown(Key.Up) || Input.keyDown(Key.W))
-            {
-                movimiento.Z = -1;
-            }
-            else if (Input.keyDown(Key.Down) || Input.keyDown(Key.S))
-            {
-                movimiento.Z = 1;
-            }
-
-            //salto
-            if (Input.keyPressed(Key.Space) && !IsJumping)
-            {
-                IsJumping = true;
-                JumpDirection = 1;
-            }
-            
             //Posicion original del mesh principal (o sea del bandicoot)
-            */
             var originalPos = Bandicoot.Position;
             anguloCamara = Bandicoot.Position;
+
             //Multiplicar movimiento por velocidad y elapsedTime
             BandicootMovement *= MOVEMENT_SPEED * ElapsedTime;
 
-            Bandicoot.Move(BandicootMovement);
+            //Translation = TGCMatrix.Translation(BandicootMovement);
 
-            if (IsJumping)
-            {
-                Bandicoot.Move(0, JumpDirection * MOVEMENT_SPEED * ElapsedTime, 0);
+            Physics.Update(Input);
 
-                //Si la posicion en Y es mayor a la maxima altura. 
-                if (Bandicoot.Position.Y > alturaMaximaSalto)
-                {
-                    JumpDirection = -1;
-                }
+            Physics.bandicootRigidBody.ActivationState = BulletSharp.ActivationState.ActiveTag;
+            Physics.bandicootRigidBody.ApplyCentralImpulse(BandicootMovement.ToBsVector);
 
-                if (Bandicoot.Position.Y <= posInicialBandicoot)
-                {
-                    IsJumping = false;
-                }
-            }
-            
-            //foreach (TgcMesh mesh in Parte1)
-            //{
-            //    if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.BoundingBox))
-            //    {
+            // Desplazar camara para seguir al personaje
+            var posCamara = new TGCVector3(Physics.bandicootRigidBody.CenterOfMassPosition);
+            BandicootCamera.Target = posCamara;
 
-            //        Bandicoot.Move(-BandicootMovement);
-            //        BandicootCamera.SetCamera((Camara.Position - BandicootMovement), anguloCamara);
-            //    }
-
-            //}
-            
             foreach (Mesh mesh in Lista)
             {
                 if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.Malla.BoundingBox))
@@ -213,37 +167,7 @@ namespace TGC.Group.Model
 
             }
             Lista.RemoveAll(mesh => mesh.Malla.BoundingBox == null);
-
-            //Desplazar camara para seguir al personaje
-            BandicootCamera.SetCamera(BandicootCamera.Position + new TGCVector3(BandicootMovement), anguloCamara);
-
-            //Capturar Input Mouse
-           /* if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
-            {
-                //Como ejemplo podemos hacer un movimiento simple de la cámara.
-                //En este caso le sumamos un valor en Y
-                Camara.SetCamera(Camara.Position + new TGCVector3(0, 10f, 0), Camara.LookAt);
-                //Ver ejemplos de cámara para otras operaciones posibles.
-
-                //Si superamos cierto Y volvemos a la posición original.
-                if (Camara.Position.Y > 300f)
-                {
-                    Camara.SetCamera(new TGCVector3(Camara.Position.X, 0f, Camara.Position.Z), Camara.LookAt);
-                }
-            }
-
-            if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_RIGHT))
-            {
-                //Pruebo si baja camara
-                Camara.SetCamera(Camara.Position + new TGCVector3(0, -10f, 0), Camara.LookAt);
-
-                //igual que si sube a cierta altura reinicio camara
-                if (Camara.Position.Y < -200f)
-                {
-                    Camara.SetCamera(new TGCVector3(Camara.Position.X, 0f, Camara.Position.Z), Camara.LookAt);
-                }
-            }*/
-
+   
             PostUpdate();
         }
 
@@ -297,7 +221,6 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             Bandicoot.Dispose();
-            terrain.Dispose();
             
         }
     }
