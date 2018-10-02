@@ -26,8 +26,12 @@ namespace TGC.Group.Model.Utils
 
         private RigidBody ball;
         private TGCSphere sphereMesh;
+        private TGCBox platformMesh;
+        private TGCBox platformMesh2;
         private TGCVector3 director;
         public RigidBody bandicootRigidBody;
+        private RigidBody staticPlatform;
+        private RigidBody movingPlatform;
 
         
 
@@ -38,6 +42,7 @@ namespace TGC.Group.Model.Utils
 
         public void Init(String MediaDir)
         {
+            #region world configuration
             // Create a physics world using default config
             collisionConfiguration = new DefaultCollisionConfiguration();
             dispatcher = new CollisionDispatcher(collisionConfiguration);
@@ -53,10 +58,14 @@ namespace TGC.Group.Model.Utils
             heighMap.Restitution = 0;
 
             dynamicsWorld.AddRigidBody(heighMap);
+            #endregion
 
             float radius = 30f;
             float mass = 0.75f;
             var position = new TGCVector3(-50f, 30, -200f);
+            TGCVector3 size = TGCVector3.Empty;
+
+            #region Stone Sphere
             ball = BulletRigidBodyConstructor.CreateBall(radius, mass, position);
             ball.SetDamping(0.1f, 0.5f);
             ball.Restitution = 1f;
@@ -69,21 +78,51 @@ namespace TGC.Group.Model.Utils
             sphereMesh.updateValues();
             
             director = new TGCVector3(1, 0, 0);
+            #endregion
 
+            #region BandicootRigidBody
             //Cuerpo rigido de una caja basica
-            position = new TGCVector3(0, 10, 0);
-            mass = 2;
-            bandicootRigidBody = BulletRigidBodyConstructor.CreateBox(new TGCVector3(20,10,20),mass,position,0,0,0,0.3f);
+            position = new TGCVector3(0, 1, 0);
+            mass = 1.5f;
+            bandicootRigidBody = BulletRigidBodyConstructor.CreateCapsule(10, 5, position, mass, false);
+            
             //Valores que podemos modificar a partir del RigidBody base
-            bandicootRigidBody.SetDamping(0f, 0f);
+            bandicootRigidBody.SetDamping(0.1f, 0f);
             bandicootRigidBody.Restitution = 0f;
+            bandicootRigidBody.Friction = 0.6f;
             bandicootRigidBody.InvInertiaDiagLocal = TGCVector3.Empty.ToBsVector;
-
             //Agregamos el RidigBody al World
             dynamicsWorld.AddRigidBody(bandicootRigidBody);
+            #endregion
 
+            #region static platform
+            position = new TGCVector3(-250, 5, 200);
+            mass = 0;
+            size = new TGCVector3(70, 30, 30);
+            staticPlatform = BulletRigidBodyConstructor.CreateBox(size,mass,position,0,0,0,0.7f);
+            dynamicsWorld.AddRigidBody(staticPlatform);
 
-            
+            //mesh para visualizar plataforma
+            var platformTexture = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{MediaDir}\\Textures\\rockwall.jpg");
+            size = size * 2;
+            platformMesh = TGCBox.fromSize(size, platformTexture);
+            platformMesh.Transform =new TGCMatrix(staticPlatform.InterpolationWorldTransform);
+            platformMesh.updateValues();
+            #endregion
+
+            //#region mobile platform
+            //position = new TGCVector3(-250, 5, 200);
+            //mass = 0;
+            //size = new TGCVector3(70, 30, 30);
+            //movingPlatform = BulletRigidBodyConstructor.CreateBox(size, mass, position, 0, 0, 0, 0.7f);
+            //dynamicsWorld.AddRigidBody(movingPlatform);
+
+            ////mesh para visualizar plataforma
+            ////var platformTexture = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{MediaDir}\\Textures\\rockwall.jpg");
+            //platformMesh2 = TGCBox.fromSize(size, platformTexture);
+            //platformMesh2.Transform = new TGCMatrix(staticPlatform.InterpolationWorldTransform);
+            //platformMesh2.updateValues();
+            //#endregion
         }
 
         public void Update(TgcD3dInput input)
@@ -135,6 +174,8 @@ namespace TGC.Group.Model.Utils
             sphereMesh.Transform = TGCMatrix.Scaling(30, 30, 30)
                 * new TGCMatrix(ball.InterpolationWorldTransform);
             sphereMesh.Render();
+            platformMesh.Render();
+
         }
 
         public void Dispose()

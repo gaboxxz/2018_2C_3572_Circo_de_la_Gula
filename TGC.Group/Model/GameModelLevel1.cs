@@ -34,7 +34,10 @@ namespace TGC.Group.Model
         public TgcThirdPersonCamera BandicootCamera { get; set; }
         public float DirectorAngle { get; set; }
         public TGCVector3 BandicootMovement { get; set; }
-       
+        public TGCMatrix Rotation { get; set; }
+        public Physics Physics { get; set;
+
+        }
         //pisos, paredes y otros meshes
         private List<TgcMesh> Parte1 = new List<TgcMesh>();
         private List<TgcMesh> Parte2 = new List<TgcMesh>();

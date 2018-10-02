@@ -20,5 +20,6 @@ namespace TGC.Group.Model.Utils
         bool IsJumping { get; set; }
         int JumpDirection { get; set; }
         TGCMatrix Rotation { get; set; }
+        Physics Physics { get; set; }
     }
 }

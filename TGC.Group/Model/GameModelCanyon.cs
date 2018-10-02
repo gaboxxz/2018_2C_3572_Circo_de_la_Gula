@@ -149,7 +149,7 @@ namespace TGC.Group.Model
             //Multiplicar movimiento por velocidad y elapsedTime
             BandicootMovement *= MOVEMENT_SPEED * ElapsedTime;
 
-            Translation = TGCMatrix.Translation(BandicootMovement);
+            //Translation = TGCMatrix.Translation(BandicootMovement);
 
             Physics.Update(Input);
 
@@ -185,10 +185,8 @@ namespace TGC.Group.Model
                 Bandicoot.BoundingBox.Render();
             }
 
-
-            //Bandicoot.Transform = escala * rotacion * traslacion;
-            //Bandicoot.Transform = escala * rotacion * new TGCMatrix(physics.bandicootRigidBody.InterpolationWorldTransform);
-            Bandicoot.Transform = Scale * Rotation * new TGCMatrix(Physics.bandicootRigidBody.InterpolationWorldTransform);
+           
+            Bandicoot.Transform = Scale * Rotation * new TGCMatrix(Physics.bandicootRigidBody.InterpolationWorldTransform)* TGCMatrix.Translation(0,-10,0);
 
             //Bandicoot.UpdateMeshTransform();
             Bandicoot.Render();
