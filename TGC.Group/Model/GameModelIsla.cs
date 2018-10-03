@@ -31,7 +31,6 @@ namespace TGC.Group.Model
         private const float alturaMaximaInicial = 70f;
         private const float MOVEMENT_SPEED = 100f;
         private float alturaMaximaSalto;
-        private TgcSimpleTerrain terrain;
 
         //pisos, paredes y otros meshes
         private List<TgcMesh> Parte1 = new List<TgcMesh>();
@@ -61,10 +60,6 @@ namespace TGC.Group.Model
             var center = new TGCVector3(-22f, 0f, 0f);
             float scaleXZ = 50f;
             float scaleY = 5f;
-
-            terrain = new TgcSimpleTerrain();
-            terrain.loadHeightmap(heightmapPath, scaleXZ, scaleY, center);
-            terrain.loadTexture(texturePath);
         }
 
         public void InitMeshes()
@@ -84,24 +79,17 @@ namespace TGC.Group.Model
             Parte1 = sceneLoader.loadSceneFromFile($"{MediaDir}/Nivel1-1-TgcScene.xml").Meshes;
             Parte2 = sceneLoader.loadSceneFromFile($"{MediaDir}/Nivel1-2-TgcScene.xml").Meshes;
 
-
             //Parte2 = sceneLoader.loadSceneFromFile($"{MediaDir}/room-with-fruit3-TgcScene-TgcScene.xml").Meshes;
-
-
 
             ListaMeshes = new Escena().ObtenerMeshesDeEscena($"{MediaDir}/Nivel1-1-TgcScene.xml");
 
-
             ListaMeshes2 = new Escena().ObtenerMeshesDeEscena($"{MediaDir}/Nivel1-2-TgcScene.xml");
-
-
 
             foreach (Mesh item in ListaMeshes2)
             {
                 item.Malla.Move(0, 0, -1290f);
                 //item.Malla.setColor(Color.Black);
             }
-
 
             ListaMeshes.AddRange(ListaMeshes2);
 
@@ -110,22 +98,10 @@ namespace TGC.Group.Model
 
             foreach (Mesh item in ListaMeshes2)
             {
-                Console.WriteLine(item.Malla.Name);
                 item.Malla.Move(0, -10, -60);
-                //item.Malla.setColor(Color.Black);
             }
 
             ListaMeshes.AddRange(ListaMeshes2);
-
-            Console.WriteLine(Parte2.Count);
-            Console.WriteLine(ListaMeshes.Count);
-
-
-            foreach (var mesh in ListaMeshes)
-            {
-                //mesh.Malla.Move(0, 0, -1090f);
-            }
-
 
             foreach (TgcMesh Item in Parte2)
             {
@@ -139,7 +115,6 @@ namespace TGC.Group.Model
             var lookAt = Bandicoot.Position + new TGCVector3(0, 10, 0);
             Camara.SetCamera(postition, lookAt);
         }
-
 
         /// <summary>
         ///     Escribir aquí todo el código de inicialización: cargar modelos, texturas, 
@@ -156,7 +131,6 @@ namespace TGC.Group.Model
 
             posInicialBandicoot = Bandicoot.Position.Y;
             posBaseBandicoot = Bandicoot.Position.Y;
-
         }
 
         /// <summary>
@@ -215,12 +189,8 @@ namespace TGC.Group.Model
             //Multiplicar movimiento por velocidad y elapsedTime
             movimiento *= MOVEMENT_SPEED * ElapsedTime;
 
-
-
             Bandicoot.Move(movimiento);
             //Bandicoot.Transform = TGCMatrix.Translation(movimiento);
-
-
 
             if (saltando)
             {
@@ -311,7 +281,6 @@ namespace TGC.Group.Model
                 if (mesh.Malla.Name.Contains("movingPlatform"))
                 {
                     mesh.Move(MOVEMENT_SPEED * ElapsedTime);
-                    //mesh.Malla.Transform = 
                 }
 
 
@@ -424,17 +393,10 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             Bandicoot.Dispose();
-            terrain.Dispose();
             foreach (Mesh item in ListaMeshes)
             {
                 item.Malla.Dispose();
             }
         }
-
-
     }
-
-
-
-
 }

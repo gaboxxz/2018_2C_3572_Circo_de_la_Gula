@@ -3,6 +3,7 @@ using BulletSharp.Math;
 using Microsoft.DirectX.Direct3D;
 using Microsoft.DirectX.DirectInput;
 using System;
+using System.Collections.Generic;
 using TGC.Core.BulletPhysics;
 using TGC.Core.Collision;
 using TGC.Core.Direct3D;
@@ -26,13 +27,16 @@ namespace TGC.Group.Model.Utils
         private CustomVertex.PositionTextured[] triangleDataVB;
 
         private RigidBody ball;
-        private TGCSphere sphereMesh;
-        private TGCBox platformMesh;
-        private TGCBox platformMesh2;
-        private TGCVector3 director;
         public RigidBody bandicootRigidBody;
         private RigidBody staticPlatform;
-        private RigidBody movingPlatform;
+        private RigidBody dynamicPlatform;
+
+        private List<TGCBox> stairsMesh = new List<TGCBox>();
+        private TGCBox staticPlatformMesh;
+        private TGCBox dynamicPlatformMesh;
+        private TGCSphere sphereMesh;
+        private TGCVector3 director;
+
         public bool UsingHeightmap { get; set; }
 
         public void SetTriangleDataVB(CustomVertex.PositionTextured[] data)
@@ -61,14 +65,13 @@ namespace TGC.Group.Model.Utils
                 dynamicsWorld.AddRigidBody(heightMap);
             }
             #endregion
-
             float radius = 30f;
             float mass = 0.75f;
-            var position = new TGCVector3(-50f, 30, -200f);
+            var centerOfMass = new TGCVector3(-50f, 30, -200f);
             TGCVector3 size = TGCVector3.Empty;
 
             #region Stone Sphere
-            ball = BulletRigidBodyConstructor.CreateBall(radius, mass, position);
+            ball = BulletRigidBodyConstructor.CreateBall(radius, mass, centerOfMass);
             ball.SetDamping(0.1f, 0.5f);
             ball.Restitution = 1f;
             ball.Friction = 1;
@@ -76,7 +79,7 @@ namespace TGC.Group.Model.Utils
 
             var ballTexture = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{MediaDir}\\Textures\\rockwall.jpg");
             sphereMesh = new TGCSphere(radius, ballTexture, TGCVector3.Empty);
-            sphereMesh.BoundingSphere.setValues(position, radius);
+            sphereMesh.BoundingSphere.setValues(centerOfMass, radius);
             sphereMesh.updateValues();
 
             director = new TGCVector3(1, 0, 0);
@@ -84,7 +87,7 @@ namespace TGC.Group.Model.Utils
 
             #region BandicootRigidBody
             //Cuerpo rigido de una caja basica
-            position = new TGCVector3(0, 1, 0);
+            var position = new TGCVector3(0, 1, 0);
             mass = 1.5f;
             bandicootRigidBody = BulletRigidBodyConstructor.CreateCapsule(10, 5, position, mass, false);
 
@@ -97,34 +100,27 @@ namespace TGC.Group.Model.Utils
             dynamicsWorld.AddRigidBody(bandicootRigidBody);
             #endregion
 
-            #region static platform
-            position = new TGCVector3(0, 0, 0);
+            #region Stairs
             mass = 0;
             size = new TGCVector3(50, 20, 30);
-            staticPlatform = BulletRigidBodyConstructor.CreateBox(size, mass, position, 0, 0, 0, 0.7f);
-            staticPlatform.CenterOfMassTransform = TGCMatrix.Translation(0, 20, -50).ToBsMatrix;
-            dynamicsWorld.AddRigidBody(staticPlatform);
+            var platformTexture = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{MediaDir}\\textures\\rockwall.jpg");
+            float angle = 0.75f * FastMath.PI;
 
-            //mesh para visualizar plataforma
-            var platformTexture = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{MediaDir}\\Textures\\rockwall.jpg");
+            for (float i = 0, x = size.Z, y = size.Y, z = -size.X; i < 10; i++)
+            {
+                staticPlatform = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, 0.7f);
+                staticPlatform.CenterOfMassTransform = TGCMatrix.RotationY(angle).ToBsMatrix * TGCMatrix.Translation(x, y, z).ToBsMatrix;
+                dynamicsWorld.AddRigidBody(staticPlatform);
 
-            platformMesh = TGCBox.fromSize(2 * size, platformTexture);
-            platformMesh.Transform = new TGCMatrix(staticPlatform.InterpolationWorldTransform);
-            // platformMesh.updateValues();
-            #endregion
+                staticPlatformMesh = TGCBox.fromSize(2 * size, platformTexture);
+                staticPlatformMesh.Transform = new TGCMatrix(staticPlatform.InterpolationWorldTransform);
+                stairsMesh.Add(staticPlatformMesh);
 
-            #region Mobile platform
-            position = new TGCVector3(-250, 10, 600);
-            mass = 0;
-            size = new TGCVector3(70, 30, 30);
-            movingPlatform = BulletRigidBodyConstructor.CreateBox(size, mass, position, 0, 0, 0, 0.7f);
-            dynamicsWorld.AddRigidBody(movingPlatform);
-
-            // mesh para visualizar plataforma
-            var platformtexture = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{MediaDir}\\textures\\rockwall.jpg");
-            platformMesh2 = TGCBox.fromSize(2 * size, platformtexture);
-            platformMesh2.Transform = new TGCMatrix(staticPlatform.InterpolationWorldTransform) * TGCMatrix.Translation(0, -10, 0);
-            platformMesh2.updateValues();
+                x += 35;
+                y += 40;
+                z -= 25;
+                angle -= 0.1f;
+            }
             #endregion
         }
 
@@ -161,9 +157,6 @@ namespace TGC.Group.Model.Utils
                 ball.ActivationState = ActivationState.ActiveTag;
                 ball.ApplyCentralImpulse(TGCVector3.Up.ToBsVector * 150);
             }
-
-            platformMesh2.Transform =
-                new TGCMatrix(movingPlatform.InterpolationWorldTransform);
         }
 
         public void Render()
@@ -172,13 +165,19 @@ namespace TGC.Group.Model.Utils
                 * new TGCMatrix(ball.InterpolationWorldTransform);
             sphereMesh.Render();
 
-            platformMesh.Render();
-
-            platformMesh2.Render();
+            foreach (TGCBox stair in stairsMesh)
+            {
+                stair.Render();
+            }
         }
 
         public void Dispose()
         {
+            foreach (TGCBox stair in stairsMesh)
+            {
+                stair.Dispose();
+            }
+
             sphereMesh.Dispose();
             dynamicsWorld.Dispose();
             dispatcher.Dispose();

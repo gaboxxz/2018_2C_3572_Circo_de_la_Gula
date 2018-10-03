@@ -95,8 +95,6 @@ namespace TGC.Group.Model.Meshes
                    posicion.Z > Malla.BoundingBox.PMin.Z && posicion.Z < Malla.BoundingBox.PMax.Z)) return false;
 
 
-
-
             return true;
             */
 
@@ -117,15 +115,12 @@ namespace TGC.Group.Model.Meshes
                 return true;
 
             return false;
-
-
         }
 
         public void Move(float movimiento)
         {
             tipo.Move(this.Malla, movimiento);
         }
-
 
         public void RenderMesh()
         {
@@ -137,6 +132,5 @@ namespace TGC.Group.Model.Meshes
         {
             Malla.BoundingBox.Render();
         }
-
     }
 }

@@ -11,7 +11,6 @@ namespace TGC.Group.Model.Meshes
 {
     class MovingMesh : TipoMesh
     {
-
         private const float movingRange = 300f;
 
         private TGCVector3 director;
@@ -25,7 +24,6 @@ namespace TGC.Group.Model.Meshes
                 director.Y = 1;
             if (mesh.Name.Contains("Z"))
                 director.Z = 1;
-
         }
 
         public void ExecuteCollision(TgcMesh item, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento)
@@ -35,14 +33,10 @@ namespace TGC.Group.Model.Meshes
 
             //Bandicoot.Move(0, direccionSalto * MOVEMENT_SPEED * ElapsedTime, 0);
             camara.SetCamera((camara.Position - movimiento), anguloCamara);
-            Console.WriteLine("colision movingMesh");
-            
         }
 
         public void ExecuteCollision(TgcMesh item)
         {
-            //throw new NotImplementedException();
-            
         }
 
         public void ExecuteJumpCollision(TgcMesh MeshColisionado, TgcMesh bandicoot, Core.Camara.TgcCamera camara, Core.Mathematica.TGCVector3 movimiento, float realTimeMovement)
@@ -51,7 +45,6 @@ namespace TGC.Group.Model.Meshes
             var anguloCamara = bandicoot.Position;
             this.Move(bandicoot, realTimeMovement*2);
             camara.SetCamera((camara.Position - movimiento), anguloCamara);
-            //Console.WriteLine("colision movingMesh");
         }
 
         public void Move(TgcMesh mesh, float movimiento)
@@ -63,12 +56,9 @@ namespace TGC.Group.Model.Meshes
                 
             else
                 director = new TGCVector3(0, 0, movimiento);
-
-
             //mesh.Transform = TGCMatrix.Translation(director);
             mesh.Move(director);
             if (moved == movingRange * 2) moved = 0; 
-
         }
     }
 }
