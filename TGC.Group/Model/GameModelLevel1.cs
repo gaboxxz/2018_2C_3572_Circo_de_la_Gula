@@ -63,7 +63,7 @@ namespace TGC.Group.Model
 
             Bandicoot.AutoTransformEnable = false;
 
-            Bandicoot.Position = (new TGCVector3(0, 0, 0));
+            Bandicoot.Position = (new TGCVector3(200, 0, 500));
 
             Scale = TGCMatrix.Scaling(new TGCVector3(0.1f, 0.1f, 0.1f));
             Rotation = TGCMatrix.RotationYawPitchRoll(3.12f, 0, 0);
@@ -104,12 +104,17 @@ namespace TGC.Group.Model
             Camara = BandicootCamera;
         }
 
+
         public void InitPhysics()
         {
-            Physics = new Physics();
-            Physics.UsingHeightmap = false;
+            Physics = new Physics
+            {
+                UsingHeightmap = false
+            };
             Physics.Init(MediaDir);
         }
+
+        
 
         public void ListenInputs()
         {
@@ -156,7 +161,7 @@ namespace TGC.Group.Model
             var posCamara = new TGCVector3(Bandicoot.Position);
             BandicootCamera.Target = posCamara;
 
-          /*  foreach (Mesh mesh in Lista)
+            foreach (Mesh mesh in Lista)
             {
                 if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.Malla.BoundingBox))
                 {
@@ -165,7 +170,7 @@ namespace TGC.Group.Model
             }
 
             Lista.RemoveAll(mesh => mesh.Malla.BoundingBox == null);
-   */
+   
             PostUpdate();
         }
 
