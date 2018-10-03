@@ -153,10 +153,10 @@ namespace TGC.Group.Model
             Physics.bandicootRigidBody.ApplyCentralImpulse(BandicootMovement.ToBsVector);
 
             // Desplazar camara para seguir al personaje
-            var posCamara = new TGCVector3(Physics.bandicootRigidBody.CenterOfMassPosition);
+            var posCamara = new TGCVector3(Bandicoot.Position);
             BandicootCamera.Target = posCamara;
 
-            foreach (Mesh mesh in Lista)
+          /*  foreach (Mesh mesh in Lista)
             {
                 if (TgcCollisionUtils.testAABBAABB(Bandicoot.BoundingBox, mesh.Malla.BoundingBox))
                 {
@@ -165,7 +165,7 @@ namespace TGC.Group.Model
             }
 
             Lista.RemoveAll(mesh => mesh.Malla.BoundingBox == null);
-   
+   */
             PostUpdate();
         }
 
