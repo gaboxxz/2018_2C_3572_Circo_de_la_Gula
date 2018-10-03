@@ -17,7 +17,7 @@ namespace TGC.Group.Model.Utils.Commands
             {
                 model.IsJumping = true;
                 model.JumpDirection = 1;
-                model.Physics.bandicootRigidBody.ApplyCentralImpulse(new Core.Mathematica.TGCVector3(0, 150, 0).ToBsVector);
+                model.Physics.bandicootRigidBody.ApplyCentralImpulse(new Core.Mathematica.TGCVector3(0, 180, 0).ToBsVector);
             }
             else
                 model.IsJumping = false;

@@ -1,4 +1,5 @@
 ﻿using BulletSharp;
+using BulletSharp.Math;
 using Microsoft.DirectX.Direct3D;
 using Microsoft.DirectX.DirectInput;
 using System;
@@ -59,7 +60,6 @@ namespace TGC.Group.Model.Utils
                 heightMap.Restitution = 0;
                 dynamicsWorld.AddRigidBody(heightMap);
             }
-
             #endregion
 
             float radius = 30f;
@@ -91,40 +91,41 @@ namespace TGC.Group.Model.Utils
             //Valores que podemos modificar a partir del RigidBody base
             bandicootRigidBody.SetDamping(0.1f, 0f);
             bandicootRigidBody.Restitution = 0f;
-            bandicootRigidBody.Friction = 0.6f;
+            bandicootRigidBody.Friction = 0.1f;
             bandicootRigidBody.InvInertiaDiagLocal = TGCVector3.Empty.ToBsVector;
             //Agregamos el RidigBody al World
             dynamicsWorld.AddRigidBody(bandicootRigidBody);
             #endregion
 
             #region static platform
-            position = new TGCVector3(-250, 5, 200);
+            position = new TGCVector3(0, 0, 0);
             mass = 0;
-            size = new TGCVector3(70, 30, 30);
+            size = new TGCVector3(50, 20, 30);
             staticPlatform = BulletRigidBodyConstructor.CreateBox(size, mass, position, 0, 0, 0, 0.7f);
+            staticPlatform.CenterOfMassTransform = TGCMatrix.Translation(0, 20, -50).ToBsMatrix;
             dynamicsWorld.AddRigidBody(staticPlatform);
 
             //mesh para visualizar plataforma
             var platformTexture = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{MediaDir}\\Textures\\rockwall.jpg");
-            size = size * 2;
-            platformMesh = TGCBox.fromSize(size, platformTexture);
+
+            platformMesh = TGCBox.fromSize(2 * size, platformTexture);
             platformMesh.Transform = new TGCMatrix(staticPlatform.InterpolationWorldTransform);
-            platformMesh.updateValues();
+            // platformMesh.updateValues();
             #endregion
 
-            //#region mobile platform
-            //position = new TGCVector3(-250, 5, 200);
-            //mass = 0;
-            //size = new TGCVector3(70, 30, 30);
-            //movingPlatform = BulletRigidBodyConstructor.CreateBox(size, mass, position, 0, 0, 0, 0.7f);
-            //dynamicsWorld.AddRigidBody(movingPlatform);
+            #region Mobile platform
+            position = new TGCVector3(-250, 10, 600);
+            mass = 0;
+            size = new TGCVector3(70, 30, 30);
+            movingPlatform = BulletRigidBodyConstructor.CreateBox(size, mass, position, 0, 0, 0, 0.7f);
+            dynamicsWorld.AddRigidBody(movingPlatform);
 
-            ////mesh para visualizar plataforma
-            ////var platformTexture = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{MediaDir}\\Textures\\rockwall.jpg");
-            //platformMesh2 = TGCBox.fromSize(size, platformTexture);
-            //platformMesh2.Transform = new TGCMatrix(staticPlatform.InterpolationWorldTransform);
-            //platformMesh2.updateValues();
-            //#endregion
+            // mesh para visualizar plataforma
+            var platformtexture = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{MediaDir}\\textures\\rockwall.jpg");
+            platformMesh2 = TGCBox.fromSize(2 * size, platformtexture);
+            platformMesh2.Transform = new TGCMatrix(staticPlatform.InterpolationWorldTransform) * TGCMatrix.Translation(0, -10, 0);
+            platformMesh2.updateValues();
+            #endregion
         }
 
         public void Update(TgcD3dInput input)
@@ -132,16 +133,7 @@ namespace TGC.Group.Model.Utils
             dynamicsWorld.StepSimulation(1 / 60f, 100);
             var strength = 10f;
             var angle = 0;
-            /*
-                        if (input.keyDown(Key.W))
-                        {
-                            //moving = true;
-                            //Activa el comportamiento de la simulacion fisica para la capsula
-                            bandicootRigidBody.ActivationState = ActivationState.ActiveTag;
-                            //bandicootRigidBody.AngularVelocity = TGCVector3.Empty.ToBsVector;
-                            bandicootRigidBody.ApplyCentralImpulse(-strength * new TGCVector3(0,0,1.3f).ToBsVector);
-                        }
-            */
+
             if (input.keyDown(Key.I))
             {
                 ball.ActivationState = ActivationState.ActiveTag;
@@ -169,6 +161,9 @@ namespace TGC.Group.Model.Utils
                 ball.ActivationState = ActivationState.ActiveTag;
                 ball.ApplyCentralImpulse(TGCVector3.Up.ToBsVector * 150);
             }
+
+            platformMesh2.Transform =
+                new TGCMatrix(movingPlatform.InterpolationWorldTransform);
         }
 
         public void Render()
@@ -176,8 +171,10 @@ namespace TGC.Group.Model.Utils
             sphereMesh.Transform = TGCMatrix.Scaling(30, 30, 30)
                 * new TGCMatrix(ball.InterpolationWorldTransform);
             sphereMesh.Render();
+
             platformMesh.Render();
 
+            platformMesh2.Render();
         }
 
         public void Dispose()

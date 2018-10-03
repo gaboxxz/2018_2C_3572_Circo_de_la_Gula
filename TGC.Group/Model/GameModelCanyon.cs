@@ -66,9 +66,7 @@ namespace TGC.Group.Model
             var pMax = new TGCVector3(0, 22.5f, 0);
             
             Bandicoot = sceneLoader.loadSceneFromFile(path).Meshes[0];
-
             Bandicoot.AutoTransformEnable = false;
-
             Bandicoot.Position = TGCVector3.Empty;
 
             Scale = TGCMatrix.Scaling(new TGCVector3(0.1f, 0.1f, 0.1f));
@@ -76,9 +74,6 @@ namespace TGC.Group.Model
             Translation = TGCMatrix.Translation(Bandicoot.Position);
 
             Bandicoot.Transform = Scale * Rotation * TGCMatrix.Translation(Bandicoot.Position);
-
-            Console.WriteLine("posicion:" + Bandicoot.Position);
-            
             Bandicoot.BoundingBox.setExtremes(pMin, pMax);
 
             posInicialBandicoot = Bandicoot.Position.Y;
@@ -93,8 +88,10 @@ namespace TGC.Group.Model
         }
 
         public void InitPhysics() {
-            Physics = new Physics();
-            Physics.UsingHeightmap = true;
+            Physics = new Physics
+            {
+                UsingHeightmap = true
+            };
             Physics.SetTriangleDataVB(terrain.getData());
             Physics.Init(MediaDir);
         }
@@ -173,16 +170,13 @@ namespace TGC.Group.Model
             DrawText.drawText("La posicion del bandicoot es: " + TGCVector3.PrintVector3(Bandicoot.Position), 0, 40, Color.OrangeRed);
             DrawText.drawText("La posicion del bandicoot es: " + Physics.bandicootRigidBody.CenterOfMassPosition, 0, 50, Color.OrangeRed);
 
-
             if (BoundingBox)
             {
                 Bandicoot.BoundingBox.Render();
             }
-
            
             Bandicoot.Transform = Scale * Rotation * new TGCMatrix(Physics.bandicootRigidBody.InterpolationWorldTransform)* TGCMatrix.Translation(0,-10,0);
-
-            //Bandicoot.UpdateMeshTransform();
+            
             Bandicoot.Render();
             terrain.Render();
             Physics.Render();

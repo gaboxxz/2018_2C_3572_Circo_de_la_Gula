@@ -23,8 +23,6 @@ namespace TGC.Group.Model.Utils.Commands
                     Z = (-1) * FastMath.Cos(model.DirectorAngle)
                 };
                 model.BandicootMovement = movement;
-                
-                model.BandicootCamera.OffsetForward -= 1 * model.ElapsedTime;
                 model.BandicootCamera.Target = model.Bandicoot.Position;
             }
         }
