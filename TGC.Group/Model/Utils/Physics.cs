@@ -22,6 +22,9 @@ namespace TGC.Group.Model.Utils
         private DefaultCollisionConfiguration collisionConfiguration;
         private SequentialImpulseConstraintSolver constraintSolver;
         private BroadphaseInterface overlappingPairCache;
+        private TGCVector3 direccion = new TGCVector3(0, 1, 0);
+        private int rango = 0;
+        private int sentido = 1;
 
         // Data of the VertexBuffer triangles (with usingHeightmap = true)
         private CustomVertex.PositionTextured[] triangleDataVB;
@@ -122,6 +125,26 @@ namespace TGC.Group.Model.Utils
                 angle -= 0.1f;
             }
             #endregion
+
+            #region Dynamic Platform
+
+            position = new TGCVector3(0, 0, 0);
+            mass = 5f;
+            size = new TGCVector3(70, 10, 30);
+            dynamicPlatform = BulletRigidBodyConstructor.CreateBox(size, mass, position, 0, 0, 0, 2f);
+            dynamicPlatform.CenterOfMassTransform = TGCMatrix.Translation(-300, 60, -200).ToBsMatrix;
+            dynamicPlatform.AngularFactor = (new Vector3(0, 0, 0));
+            dynamicsWorld.AddRigidBody(dynamicPlatform);
+
+            // mesh para visualizar plataforma
+
+            var platformtexture = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{MediaDir}\\textures\\rockwall.jpg");
+            dynamicPlatformMesh = TGCBox.fromSize(2 * size, platformtexture);
+            dynamicPlatformMesh.Transform = new TGCMatrix(dynamicPlatform.InterpolationWorldTransform);
+            dynamicPlatformMesh.AutoTransformEnable = false;
+            dynamicPlatformMesh.updateValues();
+
+            #endregion
         }
 
         public void Update(TgcD3dInput input)
@@ -157,6 +180,30 @@ namespace TGC.Group.Model.Utils
                 ball.ActivationState = ActivationState.ActiveTag;
                 ball.ApplyCentralImpulse(TGCVector3.Up.ToBsVector * 150);
             }
+
+            if (rango < 360)
+            {
+                dynamicPlatform.ActivationState = ActivationState.ActiveTag;
+                rango++;
+                if (sentido == 1)
+                {
+                    dynamicPlatform.LinearVelocity = new Vector3(5, 10, 0);
+                }
+                else
+                {
+                    dynamicPlatform.LinearVelocity = new Vector3(-5, -10, 0);
+                }
+            }
+            else
+            {
+                rango = 0;
+                if (sentido == 1)
+                    sentido = 0;
+                else
+                    sentido = 1;
+            }
+            dynamicPlatformMesh.Transform =
+                new TGCMatrix(dynamicPlatform.InterpolationWorldTransform);
         }
 
         public void Render()
@@ -164,6 +211,7 @@ namespace TGC.Group.Model.Utils
             sphereMesh.Transform = TGCMatrix.Scaling(30, 30, 30)
                 * new TGCMatrix(ball.InterpolationWorldTransform);
             sphereMesh.Render();
+            dynamicPlatformMesh.Render();
 
             foreach (TGCBox stair in stairsMesh)
             {
