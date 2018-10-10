@@ -23,7 +23,7 @@ namespace TGC.Group.Model.Utils
         private SequentialImpulseConstraintSolver constraintSolver;
         private BroadphaseInterface overlappingPairCache;
         private TGCVector3 direccion = new TGCVector3(0, 1, 0);
-        private int rango = 0;
+        private int Frecuencia = 0;
         private int sentido = 1;
 
         // Data of the VertexBuffer triangles (with usingHeightmap = true)
@@ -97,7 +97,7 @@ namespace TGC.Group.Model.Utils
             //Valores que podemos modificar a partir del RigidBody base
             bandicootRigidBody.SetDamping(0.1f, 0f);
             bandicootRigidBody.Restitution = 0f;
-            bandicootRigidBody.Friction = 0.1f;
+            bandicootRigidBody.Friction = 0.5f;
             bandicootRigidBody.InvInertiaDiagLocal = TGCVector3.Empty.ToBsVector;
             //Agregamos el RidigBody al World
             dynamicsWorld.AddRigidBody(bandicootRigidBody);
@@ -129,7 +129,7 @@ namespace TGC.Group.Model.Utils
             #region Dynamic Platform
 
             position = new TGCVector3(0, 0, 0);
-            mass = 5f;
+            mass = 1f;
             size = new TGCVector3(70, 10, 30);
             dynamicPlatform = BulletRigidBodyConstructor.CreateBox(size, mass, position, 0, 0, 0, 2f);
             dynamicPlatform.CenterOfMassTransform = TGCMatrix.Translation(-300, 60, -200).ToBsMatrix;
@@ -181,10 +181,10 @@ namespace TGC.Group.Model.Utils
                 ball.ApplyCentralImpulse(TGCVector3.Up.ToBsVector * 150);
             }
 
-            if (rango < 360)
+            if (Frecuencia < 360)
             {
                 dynamicPlatform.ActivationState = ActivationState.ActiveTag;
-                rango++;
+                Frecuencia++;
                 if (sentido == 1)
                 {
                     dynamicPlatform.LinearVelocity = new Vector3(5, 10, 0);
@@ -196,7 +196,7 @@ namespace TGC.Group.Model.Utils
             }
             else
             {
-                rango = 0;
+                Frecuencia = 0;
                 if (sentido == 1)
                     sentido = 0;
                 else

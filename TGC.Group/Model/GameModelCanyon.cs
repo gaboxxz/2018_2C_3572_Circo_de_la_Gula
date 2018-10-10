@@ -19,7 +19,8 @@ namespace TGC.Group.Model
         private float posInicialBandicoot;
         private const float MOVEMENT_SPEED = 100f;
         private TgcSimpleTerrain terrain;
-
+        private TgcSkyBox skyBox;
+        
         // Properties
         public bool IsJumping { get; set; }
         public int JumpDirection { get; set; }
@@ -115,10 +116,29 @@ namespace TGC.Group.Model
         ///     estructuras de optimización y todo procesamiento 
         ///     que podemos pre calcular para nuestro juego.
         /// </summary>
+        /// 
+
+        public void InitSkybox()
+        {
+            //Crear SkyBox
+            string path = $"{MediaDir}Skybox\\SkyBox1\\";
+            skyBox = new TgcSkyBox();
+            skyBox.Center = TGCVector3.Empty;
+            skyBox.Size = new TGCVector3(10000, 10000, 10000);
+            //var texturesPath = MediaDir + "Texturas\\Quake\\SkyBox3\\";
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, path + "phobos_up.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, path + "phobos_dn.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, path + "phobos_lf.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, path + "phobos_rt.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, path + "phobos_bk.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, path + "phobos_ft.jpg");
+            skyBox.Init();
+        }
+
         public override void Init()
         {
             var d3dDevice = D3DDevice.Instance.Device;
-
+            InitSkybox();
             InitTerrain();
             InitMeshes();
             InitCamera();
@@ -176,7 +196,8 @@ namespace TGC.Group.Model
             }
            
             Bandicoot.Transform = Scale * Rotation * new TGCMatrix(Physics.bandicootRigidBody.InterpolationWorldTransform)* TGCMatrix.Translation(0,-10,0);
-            
+
+            skyBox.Render();
             Bandicoot.Render();
             terrain.Render();
             Physics.Render();
