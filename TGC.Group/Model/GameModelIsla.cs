@@ -46,6 +46,12 @@ namespace TGC.Group.Model
 
         private bool BoundingBox { get; set; }
 
+        public TGCMatrix Traslation;
+        public TGCMatrix jumpTraslation;
+        private TGCMatrix Scale;
+        private TGCMatrix Rotation;
+
+
         public GameModelIsla(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
             Category = Game.Default.Category;
@@ -70,11 +76,28 @@ namespace TGC.Group.Model
             var pMax = new TGCVector3(0, 225f, 0);
 
             Bandicoot = sceneLoader.loadSceneFromFile(path).Meshes[0];
+
+            Bandicoot.AutoTransformEnable = false;
+            Bandicoot.AutoUpdateBoundingBox = false;
+
+
             Bandicoot.Scale = new TGCVector3(0.15f, 0.15f, 0.15f);
             Bandicoot.RotateY(3.12f);
             Bandicoot.BoundingBox.setExtremes(pMin, pMax);
-            Bandicoot.Move(0, 1, 830);
+            
+            
+            Scale = TGCMatrix.Scaling(0.15f, 0.15f, 0.15f);
+            Rotation = TGCMatrix.RotationY(3.12f);
+
+
+            //Traslation = TGCMatrix.Translation(0, 1, 830);
+            //Bandicoot.Transform = TGCMatrix.Scaling(Bandicoot.Scale) * TGCMatrix.RotationYawPitchRoll(3.12f, 0, 0) * Traslation;
+
+            //Bandicoot.Move(0, 1, 830);
             //Bandicoot.Position = TGCVector3.Empty;
+
+            Bandicoot.Position = new TGCVector3(0,1,830);
+            Traslation = TGCMatrix.Translation(0, 1, 830);
 
             Parte1 = sceneLoader.loadSceneFromFile($"{MediaDir}/Nivel1-1-TgcScene.xml").Meshes;
             Parte2 = sceneLoader.loadSceneFromFile($"{MediaDir}/Nivel1-2-TgcScene.xml").Meshes;
@@ -88,6 +111,9 @@ namespace TGC.Group.Model
             foreach (Mesh item in ListaMeshes2)
             {
                 item.Malla.Move(0, 0, -1290f);
+                //item.Malla.Transform = TGCMatrix.Translation(0, 0, -1290f);
+
+                //item.Malla.UpdateMeshTransform();
                 //item.Malla.setColor(Color.Black);
             }
 
@@ -103,10 +129,6 @@ namespace TGC.Group.Model
 
             ListaMeshes.AddRange(ListaMeshes2);
 
-            foreach (TgcMesh Item in Parte2)
-            {
-                Item.Move(0, 0, -1090f);
-            }
         }
 
         public void InitCamera()
@@ -141,7 +163,7 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
-
+            
             alturaMaximaSalto = posBaseBandicoot + alturaMaximaInicial;
             // Capturar Input teclado utilizado para movimiento 
             var anguloCamara = TGCVector3.Empty;
@@ -187,16 +209,18 @@ namespace TGC.Group.Model
             anguloCamara = Bandicoot.Position;
 
             //Multiplicar movimiento por velocidad y elapsedTime
-            movimiento *= MOVEMENT_SPEED * ElapsedTime;
+            movimiento *= MOVEMENT_SPEED * ElapsedTime ;
 
-            Bandicoot.Move(movimiento);
+            //Bandicoot.Move(movimiento);
+            Traslation *= TGCMatrix.Translation(movimiento);
+            
             //Bandicoot.Transform = TGCMatrix.Translation(movimiento);
 
             if (saltando)
             {
                 Bandicoot.Move(0, direccionSalto * MOVEMENT_SPEED * ElapsedTime, 0);
-                //movimiento.Y = direccionSalto * MOVEMENT_SPEED * ElapsedTime;
-
+                Traslation *= TGCMatrix.Translation(0, direccionSalto * MOVEMENT_SPEED * ElapsedTime, 0);
+                
                 //Si la posicion en Y es mayor a la maxima altura. 
                 if (Bandicoot.Position.Y > alturaMaximaSalto)
                 {
@@ -339,11 +363,26 @@ namespace TGC.Group.Model
             DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText("Con clic izquierdo subimos la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
             DrawText.drawText("La posicion del bandicoot es: " + TGCVector3.PrintVector3(Bandicoot.Position), 0, 40, Color.Black);
+            DrawText.drawText("La posicion del bandicoot es: " + Traslation, 0, 50, Color.Black);
+
             //terrain.Render();
 
             // Cuando tenemos modelos mesh podemos utilizar un método que hace la matriz de transformación estándar.
             // Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
-            Bandicoot.UpdateMeshTransform();
+            //Bandicoot.UpdateMeshTransform();
+
+            var transformacion = Scale * Rotation * Traslation;
+
+            //Bandicoot.Transform = TGCMatrix.Scaling(Bandicoot.Scale) * TGCMatrix.RotationY(3.12f) * Traslation * jumpTraslation;
+            //Bandicoot.Move(0, 0, 1);
+
+            Bandicoot.Transform = transformacion;
+            //Bandicoot.Position.TransformCoordinate(transformacion);
+
+            //Bandicoot.BoundingBox.
+            Bandicoot.BoundingBox.transform(transformacion);
+            
+            //new TGCBox().updateValues
             Bandicoot.Render();
             /*
             foreach (TgcMesh item in Parte1)
