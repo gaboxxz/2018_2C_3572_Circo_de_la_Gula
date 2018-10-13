@@ -2,6 +2,7 @@
 using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
+using TGC.Core.Terrain;
 using TGC.Group.Camara;
 
 namespace TGC.Group.Model.Utils
@@ -20,6 +21,8 @@ namespace TGC.Group.Model.Utils
         bool IsJumping { get; set; }
         int JumpDirection { get; set; }
         TGCMatrix Rotation { get; set; }
-        Physics Physics { get; set; }
+        IPhysics Physics { get; set; }
+        TgcSimpleTerrain Terrain { get; set; }
+        string MediaDir { get; set; }
     }
 }

@@ -221,7 +221,7 @@ namespace TGC.Group.Form
             buttonIsland.Hide();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        /*private void button1_Click(object sender, EventArgs e)
         {
             string mediaDir = $"{Environment.CurrentDirectory}\\{Game.Default.MediaDirectory}";
             string shadersDir = $"{Environment.CurrentDirectory}\\{Game.Default.ShadersDirectory}";
@@ -233,6 +233,6 @@ namespace TGC.Group.Form
             buttonCanyon.Hide();
             buttonIsland.Hide();
 
-        }
+        }*/
     }
 }

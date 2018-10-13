@@ -1,4 +1,5 @@
 ﻿using Microsoft.DirectX.DirectInput;
+using TGC.Core.Mathematica;
 
 namespace TGC.Group.Model.Utils.Commands
 {
@@ -18,7 +19,7 @@ namespace TGC.Group.Model.Utils.Commands
                 model.Bandicoot.RotateY(1 * model.ElapsedTime);
                 model.BandicootCamera.rotateY(1 * model.ElapsedTime);
                 model.DirectorAngle += (1*model.ElapsedTime);
-                model.Rotation = TGC.Core.Mathematica.TGCMatrix.RotationY(model.DirectorAngle);
+                model.Rotation = TGCMatrix.RotationY(model.DirectorAngle);
             }
         }
     }
