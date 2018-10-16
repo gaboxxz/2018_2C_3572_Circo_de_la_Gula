@@ -32,6 +32,7 @@ namespace TGC.Group.Model
         public TGCMatrix Translation { get; set; }
         public TGCMatrix Rotation { get; set; }
         public TgcSimpleTerrain Terrain { get; set; }
+        public TgcSimpleTerrain Water { get; set; }
         public IPhysics Physics { get; set; }
         #endregion
 
@@ -50,11 +51,19 @@ namespace TGC.Group.Model
             string texturePath = $"{MediaDir}\\Textures\\canyon-horizontal.png";
             var center = TGCVector3.Empty;
             float scaleXZ = 40f;
-            float scaleY = 1.5f;
+            float scaleY = 1.3f;
 
             Terrain = new TgcSimpleTerrain();
             Terrain.loadHeightmap(heightmapPath, scaleXZ, scaleY, center);
             Terrain.loadTexture(texturePath);
+
+            heightmapPath = $"{MediaDir}\\Heightmaps\\water.jpg";
+            texturePath = $"{MediaDir}\\Textures\\water-surface.png";
+            scaleY = 3f;
+
+            Water = new TgcSimpleTerrain();
+            Water.loadHeightmap(heightmapPath, scaleXZ, scaleY, center);
+            Water.loadTexture(texturePath);
         }
 
         #region Init
@@ -75,6 +84,7 @@ namespace TGC.Group.Model
             
             DirectorAngle = FastMath.ToRad(180);
             JumpDirection = 1;
+            IsJumping = false;
         }
 
         public void InitCamera()
@@ -142,43 +152,36 @@ namespace TGC.Group.Model
 
             BandicootMovement *= MOVEMENT_SPEED * ElapsedTime;
 
-            Translation = TGCMatrix.Translation(BandicootMovement);
-
             Physics.Update();
+
+            if(Input.keyPressed(Key.L))
+            {
+                this.Init();
+            }
 
             PostUpdate();
         }
-
-        /// <summary>
-        ///     Se llama cada vez que hay que refrescar la pantalla.
-        ///     Escribir aquí todo el código referido al renderizado.
-        ///     Borrar todo lo que no haga falta.
-        /// </summary>
+        
         public override void Render()
         {
-            //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
             Bandicoot.Transform = Scale * Rotation * new TGCMatrix(Physics.BandicootRigidBody.InterpolationWorldTransform);
 
             skyBox.Render();
             Bandicoot.Render();
             Terrain.Render();
+            Water.Render();
             Physics.Render();
           
-            // Finaliza el render y presenta en pantalla, al igual que el preRender se debe usar para casos 
-            // puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
             PostRender();
         }
-
-        /// <summary>
-        ///     Es muy importante liberar los recursos, sobretodo los gráficos
-        ///     ya que quedan bloqueados en el device de video.
-        /// </summary>
+        
         public override void Dispose()
         {
             Bandicoot.Dispose();
             Physics.Dispose();
             Terrain.Dispose();
+            Water.Dispose();
         }
     }
 }

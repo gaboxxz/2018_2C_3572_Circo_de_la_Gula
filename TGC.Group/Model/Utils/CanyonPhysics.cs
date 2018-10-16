@@ -25,6 +25,7 @@ namespace TGC.Group.Model.Utils
         private float distance = -290;
         #endregion
 
+        #region Properties
         public RigidBody BandicootRigidBody { get; set; }
         public RigidBody Rock1Body { get; set; }
         public RigidBody Rock2Body { get; set; }
@@ -43,6 +44,7 @@ namespace TGC.Group.Model.Utils
         public TGCBox DynamicPlatform1Mesh { get; set; }
         public TGCBox DynamicPlatform2Mesh { get; set; }
         public TGCBox DynamicPlatform3Mesh { get; set; }
+        #endregion
 
         public void Init(IGameModel ctx)
         {
@@ -56,9 +58,9 @@ namespace TGC.Group.Model.Utils
             overlappingPairCache = new DbvtBroadphase();
             dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration)
             {
-                Gravity = new TGCVector3(0, -50f, 0).ToBsVector
+                Gravity = new TGCVector3(0, -15f, 0).ToBsVector
             };
-            
+
             var heightMap = BulletRigidBodyConstructor.CreateSurfaceFromHeighMap(ctx.Terrain.getData());
             heightMap.Restitution = 0;
             dynamicsWorld.AddRigidBody(heightMap);
@@ -83,11 +85,11 @@ namespace TGC.Group.Model.Utils
             var size = new TGCVector3(200, 150, 200);
             mass = 0;
             var centerOfMass = TGCVector3.Empty;
-            var friction = 0.7f;
+            var rockFriction = 1.5f;
             var translation = TGCMatrix.Translation(-900, size.Y, 900);
 
             // Rock1 Body
-            Rock1Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, friction);
+            Rock1Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, rockFriction);
             Rock1Body.CenterOfMassTransform = translation.ToBsMatrix;
             dynamicsWorld.AddRigidBody(Rock1Body);
 
@@ -98,7 +100,7 @@ namespace TGC.Group.Model.Utils
 
             // Rock2 Body
             size = new TGCVector3(100, 150, 100);
-            Rock2Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, friction);
+            Rock2Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, rockFriction);
             translation *= TGCMatrix.Translation(400, 1, 1);
             Rock2Body.CenterOfMassTransform = translation.ToBsMatrix;
             dynamicsWorld.AddRigidBody(Rock2Body);
@@ -108,7 +110,7 @@ namespace TGC.Group.Model.Utils
             Rock2Mesh.Transform = new TGCMatrix(Rock2Body.InterpolationWorldTransform);
 
             // Rock3 Body
-            Rock3Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, friction);
+            Rock3Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, rockFriction);
             translation *= TGCMatrix.Translation(800, 1, 1);
             Rock3Body.CenterOfMassTransform = translation.ToBsMatrix;
             dynamicsWorld.AddRigidBody(Rock3Body);
@@ -120,7 +122,7 @@ namespace TGC.Group.Model.Utils
 
             // Rock4 Body
             size = new TGCVector3(100, 200, 100);
-            Rock4Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, friction);
+            Rock4Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, rockFriction);
             translation *= TGCMatrix.Translation(0, 1, -700);
             Rock4Body.CenterOfMassTransform = translation.ToBsMatrix;
             dynamicsWorld.AddRigidBody(Rock4Body);
@@ -131,7 +133,7 @@ namespace TGC.Group.Model.Utils
 
 
             // Rock5 Body
-            Rock5Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, friction);
+            Rock5Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, rockFriction);
             translation *= TGCMatrix.Translation(1, 1, -900);
             Rock5Body.CenterOfMassTransform = translation.ToBsMatrix;
             dynamicsWorld.AddRigidBody(Rock5Body);
@@ -140,16 +142,15 @@ namespace TGC.Group.Model.Utils
             // Rock5 Mesh
             Rock5Mesh = TGCBox.fromSize(centerOfMass, 2 * size, canyonTexture);
             Rock5Mesh.Transform = new TGCMatrix(Rock5Body.InterpolationWorldTransform);
-
             #endregion
 
             #region Dynamic Platforms
             mass = 1f;
-            size = new TGCVector3(70, 10, 30);
-
+            size = new TGCVector3(70, 10, 40);
+            var platformFriction = 2.5f;
 
             // DynamicPlatform1 Body
-            DynamicPlatform1Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, 1f);
+            DynamicPlatform1Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, platformFriction);
             DynamicPlatform1Body.AngularFactor = new Vector3(0, 0, 0);
             DynamicPlatform1Body.CenterOfMassTransform =
                  TGCMatrix.RotationY(FastMath.PI_HALF).ToBsMatrix
@@ -161,9 +162,8 @@ namespace TGC.Group.Model.Utils
             DynamicPlatform1Mesh = TGCBox.fromSize(2 * size, platformtexture);
             DynamicPlatform1Mesh.Transform = new TGCMatrix(DynamicPlatform1Body.InterpolationWorldTransform);
 
-
             // DynamicPlatform2 Body
-            DynamicPlatform2Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, 1f);
+            DynamicPlatform2Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, platformFriction);
             DynamicPlatform2Body.AngularFactor = new Vector3(0, 0, 0);
             DynamicPlatform2Body.CenterOfMassTransform = TGCMatrix.Translation(300, 300, 700).ToBsMatrix;
             dynamicsWorld.AddRigidBody(DynamicPlatform2Body);
@@ -174,30 +174,16 @@ namespace TGC.Group.Model.Utils
             DynamicPlatform2Mesh.Transform = new TGCMatrix(DynamicPlatform2Body.InterpolationWorldTransform);
 
             // DynamicPlatform3 Body
-            DynamicPlatform3Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, 1f);
+            DynamicPlatform3Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, platformFriction);
             DynamicPlatform3Body.AngularFactor = new Vector3(0, 0, 0);
-            DynamicPlatform3Body.CenterOfMassTransform = TGCMatrix.Translation(300,350, 0).ToBsMatrix;
+            DynamicPlatform3Body.CenterOfMassTransform = TGCMatrix.Translation(300, 350, 0).ToBsMatrix;
             dynamicsWorld.AddRigidBody(DynamicPlatform3Body);
 
             // DynamicPlatform3 Mesh
             platformtexture2 = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{ctx.MediaDir}\\textures\\rockwall.jpg");
             DynamicPlatform3Mesh = TGCBox.fromSize(2 * size, platformtexture);
             DynamicPlatform3Mesh.Transform = new TGCMatrix(DynamicPlatform3Body.InterpolationWorldTransform);
-
-
-
             #endregion
-
-
-
-            System.Console.WriteLine(dynamicsWorld.NumCollisionObjects);
-            System.Console.WriteLine(BandicootRigidBody.CenterOfMassPosition);
-
-            System.Console.WriteLine(DynamicPlatform1Body.CenterOfMassPosition);
-            System.Console.WriteLine(DynamicPlatform2Body.CenterOfMassPosition);
-
-
-
         }
 
         public void Update()
@@ -205,87 +191,17 @@ namespace TGC.Group.Model.Utils
             dynamicsWorld.StepSimulation(1 / 60f, 100);
 
             BandicootRigidBody.ActivationState = ActivationState.ActiveTag;
-            BandicootRigidBody.ApplyCentralImpulse(ctx.BandicootMovement.ToBsVector * 1.5f);
-            
+            BandicootRigidBody.ApplyCentralImpulse(ctx.BandicootMovement.ToBsVector);
 
             var posCamara = new TGCVector3(BandicootRigidBody.CenterOfMassPosition);
             ctx.BandicootCamera.Target = posCamara;
 
-            DynamicPlatform1Body.Gravity = new Vector3(0, 0, 0);
-            DynamicPlatform2Body.Gravity = new Vector3(0, 0, 0);
-            DynamicPlatform3Body.Gravity = new Vector3(0, 0, 0);
+            var gravity = new Vector3(0, 0, 0);
+            DynamicPlatform1Body.Gravity = gravity;
+            DynamicPlatform2Body.Gravity = gravity;
+            DynamicPlatform3Body.Gravity = gravity;
 
-            #region DynamicPlatform movement
-
-            if (frecuency < 3000)
-            {
-                DynamicPlatform1Body.ActivationState = ActivationState.ActiveTag;
-                DynamicPlatform2Body.ActivationState = ActivationState.ActiveTag;
-                DynamicPlatform3Body.ActivationState = ActivationState.ActiveTag;
-
-                frecuency++;
-                if (direction == 1)
-                {
-                    if(BandicootRigidBody.CenterOfMassPosition.Y != DynamicPlatform1Body.CenterOfMassPosition.Y + 22.5f)
-                      DynamicPlatform1Body.LinearVelocity = new Vector3(10, 0, 0);
-                    else
-                        DynamicPlatform1Body.LinearVelocity = new Vector3(10, 1.25f, 0);
-                }
-                else
-                {
-                    if (BandicootRigidBody.CenterOfMassPosition.Y != DynamicPlatform1Body.CenterOfMassPosition.Y + 22.5f)
-                        DynamicPlatform1Body.LinearVelocity = new Vector3(-10, 0, 0);
-                    else
-                        DynamicPlatform1Body.LinearVelocity = new Vector3(-10, 1.25f, 0);
-
-                }
-
-                if (frecuency < 1500)
-                {
-                    DynamicPlatform2Body.LinearVelocity = new Vector3(0, 0, -10 * direction);
-                    DynamicPlatform3Body.LinearVelocity = new Vector3(0, -3 * direction, -10 * direction);
-                }
-                else
-                {
-                    DynamicPlatform2Body.LinearVelocity = new Vector3(0, 2 * direction, 0);
-                    DynamicPlatform3Body.LinearVelocity = new Vector3(0, 3 * direction, -10 * direction);
-                }
-                if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform1Body.CenterOfMassPosition.Y + 22.5f)
-                {
-                    DynamicPlatform1Body.LinearVelocity += new Vector3(0, 1.25f, 0);
-
-                }
-                if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform2Body.CenterOfMassPosition.Y + 22.5f)
-                {
-                    DynamicPlatform2Body.LinearVelocity += new Vector3(0, 1.25f, 0);
-
-                }
-                if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform3Body.CenterOfMassPosition.Y + 22.5f)
-                {
-                    DynamicPlatform3Body.LinearVelocity += new Vector3(0, 1.25f, 0);
-                }
-
-                #endregion
-            }
-            else
-            {
-                frecuency = 0;
-
-                if (direction == 1)
-                    direction = -1;
-                else
-                    direction = 1;
-    }
-
-            DynamicPlatform1Mesh.Transform = new TGCMatrix(DynamicPlatform1Body.InterpolationWorldTransform);
-            DynamicPlatform2Mesh.Transform = new TGCMatrix(DynamicPlatform2Body.InterpolationWorldTransform);
-            DynamicPlatform3Mesh.Transform = new TGCMatrix(DynamicPlatform3Body.InterpolationWorldTransform);
-
-            System.Console.WriteLine(DynamicPlatform2Body.CenterOfMassPosition);
-
-            System.Console.WriteLine(BandicootRigidBody.CenterOfMassPosition-DynamicPlatform2Body.CenterOfMassPosition);
-
-
+            MovePlatforms();
         }
 
         public void Render()
@@ -298,7 +214,6 @@ namespace TGC.Group.Model.Utils
             DynamicPlatform1Mesh.Render();
             DynamicPlatform2Mesh.Render();
             DynamicPlatform3Mesh.Render();
-
         }
 
         public void Dispose()
@@ -333,6 +248,68 @@ namespace TGC.Group.Model.Utils
             constraintSolver.Dispose();
             overlappingPairCache.Dispose();
             #endregion 
+        }
+
+        public void MovePlatforms()
+        {
+            if (frecuency < 3000)
+            {
+                DynamicPlatform1Body.ActivationState = ActivationState.ActiveTag;
+                DynamicPlatform2Body.ActivationState = ActivationState.ActiveTag;
+                DynamicPlatform3Body.ActivationState = ActivationState.ActiveTag;
+
+                frecuency++;
+                if (direction == 1)
+                {
+                    if (BandicootRigidBody.CenterOfMassPosition.Y != DynamicPlatform1Body.CenterOfMassPosition.Y + 22.5f)
+                        DynamicPlatform1Body.LinearVelocity = new Vector3(10, 0, 0);
+                    else
+                        DynamicPlatform1Body.LinearVelocity = new Vector3(10, 1.25f, 0);
+                }
+                else
+                {
+                    if (BandicootRigidBody.CenterOfMassPosition.Y != DynamicPlatform1Body.CenterOfMassPosition.Y + 22.5f)
+                        DynamicPlatform1Body.LinearVelocity = new Vector3(-10, 0, 0);
+                    else
+                        DynamicPlatform1Body.LinearVelocity = new Vector3(-10, 1.25f, 0);
+                }
+
+                if (frecuency < 1500)
+                {
+                    DynamicPlatform2Body.LinearVelocity = new Vector3(0, 0, -10 * direction);
+                    DynamicPlatform3Body.LinearVelocity = new Vector3(0, -3 * direction, -10 * direction);
+                }
+                else
+                {
+                    DynamicPlatform2Body.LinearVelocity = new Vector3(0, 2 * direction, 0);
+                    DynamicPlatform3Body.LinearVelocity = new Vector3(0, 3 * direction, -10 * direction);
+                }
+                if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform1Body.CenterOfMassPosition.Y + 22.5f)
+                {
+                    DynamicPlatform1Body.LinearVelocity += new Vector3(0, 1.25f, 0);
+                }
+                if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform2Body.CenterOfMassPosition.Y + 22.5f)
+                {
+                    DynamicPlatform2Body.LinearVelocity += new Vector3(0, 1.25f, 0);
+                }
+                if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform3Body.CenterOfMassPosition.Y + 22.5f)
+                {
+                    DynamicPlatform3Body.LinearVelocity += new Vector3(0, 1.25f, 0);
+                }
+            }
+            else
+            {
+                frecuency = 0;
+
+                if (direction == 1)
+                    direction = -1;
+                else
+                    direction = 1;
+            }
+
+            DynamicPlatform1Mesh.Transform = new TGCMatrix(DynamicPlatform1Body.InterpolationWorldTransform);
+            DynamicPlatform2Mesh.Transform = new TGCMatrix(DynamicPlatform2Body.InterpolationWorldTransform);
+            DynamicPlatform3Mesh.Transform = new TGCMatrix(DynamicPlatform3Body.InterpolationWorldTransform);
         }
     }
 }

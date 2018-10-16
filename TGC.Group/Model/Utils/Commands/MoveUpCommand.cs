@@ -22,6 +22,7 @@ namespace TGC.Group.Model.Utils.Commands
                     Y = 0,
                     Z = FastMath.Cos(model.DirectorAngle)
                 };
+
                 model.BandicootMovement = movement;
             }
         }
