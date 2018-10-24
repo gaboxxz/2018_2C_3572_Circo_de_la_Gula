@@ -71,7 +71,7 @@ namespace TGC.Group.Model
         public void InitMeshes()
         {
             var sceneLoader = new TgcSceneLoader();
-            string path = $"{MediaDir}/crash/CRASH (2)-TgcScene.xml";
+            string path = $"{MediaDir}/crash/bandicoot-TgcScene.xml";
             var pMin = new TGCVector3(-185f, 0, -100f);
             var pMax = new TGCVector3(0, 225f, 0);
 

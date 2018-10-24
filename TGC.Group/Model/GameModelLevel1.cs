@@ -1,4 +1,4 @@
-﻿using Microsoft.DirectX.DirectInput;
+﻿/*using Microsoft.DirectX.DirectInput;
 using System.Collections.Generic;
 using System.Drawing;
 using TGC.Core.Direct3D;
@@ -16,7 +16,7 @@ using TGC.Group.Camara;
 
 namespace TGC.Group.Model
 {
-    public class GameModelLevel1 : TgcExample, IGameModel
+    public class GameModelLevel1 : TgcExample
     {
         // Atributtes
         private const float alturaMaximaSalto = 70f;
@@ -46,7 +46,7 @@ namespace TGC.Group.Model
             Category = Game.Default.Category;
             Name = Game.Default.Name;
             Description = Game.Default.Description;
-            handler = new InputHandler(this);
+           // handler = new InputHandler(this);
         }
 
         public void InitMeshes()
@@ -224,4 +224,4 @@ namespace TGC.Group.Model
             
         }
     }
-}
+}*/

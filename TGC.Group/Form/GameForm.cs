@@ -8,6 +8,7 @@ using TGC.Core.Shaders;
 using TGC.Core.Sound;
 using TGC.Core.Textures;
 using TGC.Group.Model;
+using static TGC.Core.Sound.TgcMp3Player;
 
 namespace TGC.Group.Form
 {
@@ -45,10 +46,15 @@ namespace TGC.Group.Form
         /// </summary>
         private TgcD3dInput Input { get; set; }
 
+        private TgcMp3Player mp3Player;
+
         private void GameForm_Load(object sender, EventArgs e)
         {
             //Iniciar graficos.
             InitGraphics();
+
+            // Iniciar Sonidos
+            InitSoundtrack();
 
             //Titulo de la ventana principal.
             Text = "CDLG - Crash Bandicoot";
@@ -156,6 +162,10 @@ namespace TGC.Group.Form
         /// </summary>
         public void ExecuteModel()
         {
+            if (mp3Player.getStatus() == States.Playing) {
+                mp3Player.closeFile();
+            }
+
             //Ejecutar Init
             try
             {
@@ -197,6 +207,14 @@ namespace TGC.Group.Form
             TexturesPool.Instance.clearAll();
         }
 
+        private void InitSoundtrack() {
+            mp3Player = new TgcMp3Player
+            {
+                FileName = $"{ Game.Default.MediaDirectory}\\Soundtracks\\01-naughty-dog-logo.mp3"
+            };
+            mp3Player.play(true);
+        }
+
         private void ButtonCanyon_Click(object sender, EventArgs e)
         {
             string mediaDir = $"{Environment.CurrentDirectory}\\{Game.Default.MediaDirectory}";
@@ -220,8 +238,8 @@ namespace TGC.Group.Form
             buttonCanyon.Hide();
             buttonIsland.Hide();
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        
+        /*private void button1_Click(object sender, EventArgs e)
         {
             string mediaDir = $"{Environment.CurrentDirectory}\\{Game.Default.MediaDirectory}";
             string shadersDir = $"{Environment.CurrentDirectory}\\{Game.Default.ShadersDirectory}";
@@ -232,7 +250,6 @@ namespace TGC.Group.Form
             button1.Hide();
             buttonCanyon.Hide();
             buttonIsland.Hide();
-
-        }
+        }*/
     }
 }
