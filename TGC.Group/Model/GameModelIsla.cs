@@ -36,7 +36,6 @@ namespace TGC.Group.Model
         private List<TgcMesh> Parte1 = new List<TgcMesh>();
         private List<TgcMesh> Parte2 = new List<TgcMesh>();
 
-
         private List<Mesh> ListaMeshes = new List<Mesh>();
         private List<Mesh> ListaMeshes2 = new List<Mesh>();
 
@@ -50,7 +49,6 @@ namespace TGC.Group.Model
         public TGCMatrix jumpTraslation;
         private TGCMatrix Scale;
         private TGCMatrix Rotation;
-
 
         public GameModelIsla(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
@@ -163,7 +161,7 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
-            
+
             alturaMaximaSalto = posBaseBandicoot + alturaMaximaInicial;
             // Capturar Input teclado utilizado para movimiento 
             var anguloCamara = TGCVector3.Empty;
@@ -271,7 +269,6 @@ namespace TGC.Group.Model
                     }
                     else
                         posBaseBandicoot = posInicialBandicoot;
-
                 }
             }
 
@@ -358,6 +355,11 @@ namespace TGC.Group.Model
         {
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
+
+            if (Input.keyPressed(Key.K) || Input.keyPressed(Key.L))
+            {
+                DrawText.drawText("Cargando...", 25, 60, Color.Yellow);
+            }
 
             //Dibuja un texto por pantalla
             DrawText.drawText("Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);

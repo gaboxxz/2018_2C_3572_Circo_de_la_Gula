@@ -154,11 +154,6 @@ namespace TGC.Group.Model
 
             Physics.Update();
 
-            if(Input.keyPressed(Key.L))
-            {
-                this.Init();
-            }
-
             PostUpdate();
         }
         
@@ -166,6 +161,11 @@ namespace TGC.Group.Model
         {
             PreRender();
             Bandicoot.Transform = Scale * Rotation * new TGCMatrix(Physics.BandicootRigidBody.InterpolationWorldTransform);
+
+            if (Input.keyPressed(Key.K) || Input.keyPressed(Key.L))
+            {
+                DrawText.drawText("Cargando...", 25, 60, Color.Yellow);
+            }
 
             skyBox.Render();
             Bandicoot.Render();
