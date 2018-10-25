@@ -160,7 +160,8 @@ namespace TGC.Group.Model
         public override void Render()
         {
             PreRender();
-            Bandicoot.Transform = Scale * Rotation * new TGCMatrix(Physics.BandicootRigidBody.InterpolationWorldTransform);
+            Bandicoot.Transform = TGCMatrix.Translation(Bandicoot.Position.X-100, Bandicoot.Position.Y, Bandicoot.Position.Z+10) * Scale * Rotation * new TGCMatrix(Physics.BandicootRigidBody.InterpolationWorldTransform)
+            *TGCMatrix.Translation(Bandicoot.Position.X , Bandicoot.Position.Y - 13, Bandicoot.Position.Z);
 
             if (Input.keyPressed(Key.K) || Input.keyPressed(Key.L))
             {

@@ -23,6 +23,7 @@ namespace TGC.Group.Model.Utils
         private int frecuency = 0;
         private int direction = 1;
         private float distance = -290;
+        private float risingImpulse = 0.35f;
         #endregion
 
         #region Properties
@@ -259,20 +260,8 @@ namespace TGC.Group.Model.Utils
                 DynamicPlatform3Body.ActivationState = ActivationState.ActiveTag;
 
                 frecuency++;
-                if (direction == 1)
-                {
-                    if (BandicootRigidBody.CenterOfMassPosition.Y != DynamicPlatform1Body.CenterOfMassPosition.Y + 22.5f)
-                        DynamicPlatform1Body.LinearVelocity = new Vector3(10, 0, 0);
-                    else
-                        DynamicPlatform1Body.LinearVelocity = new Vector3(10, 1.25f, 0);
-                }
-                else
-                {
-                    if (BandicootRigidBody.CenterOfMassPosition.Y != DynamicPlatform1Body.CenterOfMassPosition.Y + 22.5f)
-                        DynamicPlatform1Body.LinearVelocity = new Vector3(-10, 0, 0);
-                    else
-                        DynamicPlatform1Body.LinearVelocity = new Vector3(-10, 1.25f, 0);
-                }
+                        DynamicPlatform1Body.LinearVelocity = new Vector3(10 * direction, 0, 0);
+                    
 
                 if (frecuency < 1500)
                 {
@@ -286,15 +275,15 @@ namespace TGC.Group.Model.Utils
                 }
                 if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform1Body.CenterOfMassPosition.Y + 22.5f)
                 {
-                    DynamicPlatform1Body.LinearVelocity += new Vector3(0, 1.25f, 0);
+                    DynamicPlatform1Body.LinearVelocity += new Vector3(0, risingImpulse, 0);
                 }
                 if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform2Body.CenterOfMassPosition.Y + 22.5f)
                 {
-                    DynamicPlatform2Body.LinearVelocity += new Vector3(0, 1.25f, 0);
+                    DynamicPlatform2Body.LinearVelocity += new Vector3(0, risingImpulse, 0);
                 }
                 if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform3Body.CenterOfMassPosition.Y + 22.5f)
                 {
-                    DynamicPlatform3Body.LinearVelocity += new Vector3(0, 1.25f, 0);
+                    DynamicPlatform3Body.LinearVelocity += new Vector3(0, risingImpulse, 0);
                 }
             }
             else
@@ -310,6 +299,9 @@ namespace TGC.Group.Model.Utils
             DynamicPlatform1Mesh.Transform = new TGCMatrix(DynamicPlatform1Body.InterpolationWorldTransform);
             DynamicPlatform2Mesh.Transform = new TGCMatrix(DynamicPlatform2Body.InterpolationWorldTransform);
             DynamicPlatform3Mesh.Transform = new TGCMatrix(DynamicPlatform3Body.InterpolationWorldTransform);
+            
+
+
         }
     }
 }
