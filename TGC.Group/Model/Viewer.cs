@@ -76,9 +76,7 @@ namespace TGC.Group.Model
             //Cargar shaders del framework
             TgcShaders.Instance.loadCommonShaders(shadersDir);
 
-            // Inicio el model del menu principal (hay que hacer la clase GameModelMenu!!)
-            // Esta con Model canyon para probar..
-            Model = new GameModelCanyon(mediaDir, shadersDir);
+            Model = new GameModelMenu(mediaDir, shadersDir);
             ExecuteModel();
         }
         #endregion
