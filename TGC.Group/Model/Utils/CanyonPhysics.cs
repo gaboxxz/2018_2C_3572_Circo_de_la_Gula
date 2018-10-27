@@ -299,9 +299,6 @@ namespace TGC.Group.Model.Utils
         
         public void Render()
         {
-            System.Console.WriteLine(BandicootRigidBody.CenterOfMassPosition);
-            //System.Console.WriteLine(FloatingPlatform1Body.CenterOfMassPosition);
-            System.Console.WriteLine(FloatingPlatform2Body.CenterOfMassPosition);
             Rock1Mesh.Render();
             Rock2Mesh.Render();
             Rock3Mesh.Render();
