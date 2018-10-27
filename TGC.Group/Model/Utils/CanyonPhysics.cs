@@ -1,4 +1,5 @@
-﻿using BulletSharp;
+﻿using System;
+using BulletSharp;
 using BulletSharp.Math;
 using TGC.Core.BulletPhysics;
 using TGC.Core.Direct3D;
@@ -45,6 +46,14 @@ namespace TGC.Group.Model.Utils
         public TGCBox DynamicPlatform1Mesh { get; set; }
         public TGCBox DynamicPlatform2Mesh { get; set; }
         public TGCBox DynamicPlatform3Mesh { get; set; }
+        public RigidBody FloatingPlatform1Body { get; private set; }
+        public TGCBox FloatingPlatform1Mesh { get; private set; }
+        public RigidBody FloatingPlatform2Body { get; private set; }
+        public TGCBox FloatingPlatform2Mesh { get; private set; }
+        public RigidBody FloatingPlatform3Body { get; private set; }
+        public TGCBox FloatingPlatform3Mesh { get; private set; }
+        public TGCBox DynamicPlatform4Mesh { get; private set; }
+        public RigidBody DynamicPlatform4Body { get; private set; }
         #endregion
 
         public void Init(IGameModel ctx)
@@ -64,6 +73,7 @@ namespace TGC.Group.Model.Utils
 
             var heightMap = BulletRigidBodyConstructor.CreateSurfaceFromHeighMap(ctx.Terrain.getData());
             heightMap.Restitution = 0;
+            heightMap.Friction = 1f;
             dynamicsWorld.AddRigidBody(heightMap);
             #endregion
 
@@ -78,7 +88,8 @@ namespace TGC.Group.Model.Utils
             BandicootRigidBody.Restitution = 0f;
             BandicootRigidBody.Friction = 0.15f;
             BandicootRigidBody.InvInertiaDiagLocal = TGCVector3.Empty.ToBsVector;
-            BandicootRigidBody.CenterOfMassTransform = TGCMatrix.Translation(-900, 1000, 900).ToBsMatrix;
+         //   BandicootRigidBody.CenterOfMassTransform = TGCMatrix.Translation(-900, 1000, 900).ToBsMatrix;
+            BandicootRigidBody.CenterOfMassTransform = TGCMatrix.Translation(-515, 15, 1200).ToBsMatrix;
             dynamicsWorld.AddRigidBody(BandicootRigidBody);
             #endregion
 
@@ -184,6 +195,69 @@ namespace TGC.Group.Model.Utils
             platformtexture2 = TgcTexture.createTexture(D3DDevice.Instance.Device, $"{ctx.MediaDir}\\textures\\rockwall.jpg");
             DynamicPlatform3Mesh = TGCBox.fromSize(2 * size, platformtexture);
             DynamicPlatform3Mesh.Transform = new TGCMatrix(DynamicPlatform3Body.InterpolationWorldTransform);
+
+            // DynamicPlatform4 Body
+
+            size = new TGCVector3(40, 10, 40);
+
+            DynamicPlatform4Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, platformFriction);
+            DynamicPlatform4Body.AngularFactor = new Vector3(0, 0, 0);
+            DynamicPlatform4Body.CenterOfMassTransform = TGCMatrix.Translation(-1200, 240, 1000).ToBsMatrix;
+
+            dynamicsWorld.AddRigidBody(DynamicPlatform4Body);
+
+            // DynamicPlatform4 Mesh
+            DynamicPlatform4Mesh = TGCBox.fromSize(2 * size, platformtexture);
+            DynamicPlatform4Mesh.Transform = new TGCMatrix(DynamicPlatform4Body.InterpolationWorldTransform);
+
+
+            #endregion
+
+
+            #region floatingPlatforms
+
+            size = new TGCVector3(50, 20, 50);
+
+            // FloatingPlatform1 Body
+            FloatingPlatform1Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, platformFriction);
+            FloatingPlatform1Body.AngularFactor = new Vector3(0, 0, 0);
+            FloatingPlatform1Body.CenterOfMassTransform =
+                 TGCMatrix.RotationY(FastMath.PI_HALF).ToBsMatrix
+                 * TGCMatrix.Translation(-850, 20, 1340).ToBsMatrix;
+           
+            dynamicsWorld.AddRigidBody(FloatingPlatform1Body);
+
+            // FloatingPlatform1 Mesh
+            FloatingPlatform1Mesh = TGCBox.fromSize(2 * size, canyonTexture);
+            FloatingPlatform1Mesh.Transform = new TGCMatrix(FloatingPlatform1Body.InterpolationWorldTransform);
+
+            // FloatingPlatform2 Body
+            FloatingPlatform2Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, platformFriction);
+            FloatingPlatform2Body.AngularFactor = new Vector3(0, 0, 0);
+            FloatingPlatform2Body.CenterOfMassTransform =
+                 TGCMatrix.RotationY(FastMath.PI_HALF).ToBsMatrix
+                 * TGCMatrix.Translation(-1000, 80, 1340).ToBsMatrix;
+
+            dynamicsWorld.AddRigidBody(FloatingPlatform2Body);
+
+            // FloatingPlatform2 Mesh
+            FloatingPlatform2Mesh = TGCBox.fromSize(2 * size, canyonTexture);
+            FloatingPlatform2Mesh.Transform = new TGCMatrix(FloatingPlatform2Body.InterpolationWorldTransform);
+
+            // FloatingPlatform3 Body
+            size = new TGCVector3(50, 20, 100);
+
+            FloatingPlatform3Body = BulletRigidBodyConstructor.CreateBox(size, mass, centerOfMass, 0, 0, 0, platformFriction);
+            FloatingPlatform3Body.AngularFactor = new Vector3(0, 0, 0);
+            FloatingPlatform3Body.CenterOfMassTransform = TGCMatrix.Translation(-1200, 140, 1290).ToBsMatrix;
+
+            dynamicsWorld.AddRigidBody(FloatingPlatform3Body);
+
+            // FloatingPlatform3 Mesh
+            FloatingPlatform3Mesh = TGCBox.fromSize(2 * size, canyonTexture);
+            FloatingPlatform3Mesh.Transform = new TGCMatrix(FloatingPlatform3Body.InterpolationWorldTransform);
+
+
             #endregion
         }
 
@@ -194,6 +268,10 @@ namespace TGC.Group.Model.Utils
             BandicootRigidBody.ActivationState = ActivationState.ActiveTag;
             BandicootRigidBody.ApplyCentralImpulse(ctx.BandicootMovement.ToBsVector);
 
+            FloatingPlatform1Body.ActivationState = ActivationState.ActiveTag;
+            FloatingPlatform2Body.ActivationState = ActivationState.ActiveTag;
+            FloatingPlatform3Body.ActivationState = ActivationState.ActiveTag;
+
             var posCamara = new TGCVector3(BandicootRigidBody.CenterOfMassPosition);
             ctx.BandicootCamera.Target = posCamara;
 
@@ -202,11 +280,28 @@ namespace TGC.Group.Model.Utils
             DynamicPlatform2Body.Gravity = gravity;
             DynamicPlatform3Body.Gravity = gravity;
 
+            FloatingPlatform1Body.Gravity = new TGCVector3(0,-50,0).ToBsVector;
+            FloatingPlatform2Body.Gravity = gravity;
+            FloatingPlatform3Body.Gravity = gravity;
+            FloatingPlatform2Body.LinearVelocity = new Vector3(0, 0, 0);
+            FloatingPlatform3Body.LinearVelocity = new Vector3(0, 0, 0);
+
+
+            FloatingPlatform1Mesh.Transform = new TGCMatrix(FloatingPlatform1Body.InterpolationWorldTransform);
+            FloatingPlatform2Mesh.Transform = new TGCMatrix(FloatingPlatform2Body.InterpolationWorldTransform);
+            FloatingPlatform3Mesh.Transform = new TGCMatrix(FloatingPlatform3Body.InterpolationWorldTransform);
+
+            CollideWithFloatingPlatform(FloatingPlatform2Body, BandicootRigidBody);
+            CollideWithFloatingPlatform(FloatingPlatform3Body, BandicootRigidBody);
+
             MovePlatforms();
         }
-
+        
         public void Render()
         {
+            System.Console.WriteLine(BandicootRigidBody.CenterOfMassPosition);
+            //System.Console.WriteLine(FloatingPlatform1Body.CenterOfMassPosition);
+            System.Console.WriteLine(FloatingPlatform2Body.CenterOfMassPosition);
             Rock1Mesh.Render();
             Rock2Mesh.Render();
             Rock3Mesh.Render();
@@ -215,6 +310,11 @@ namespace TGC.Group.Model.Utils
             DynamicPlatform1Mesh.Render();
             DynamicPlatform2Mesh.Render();
             DynamicPlatform3Mesh.Render();
+            DynamicPlatform4Mesh.Render();
+
+            FloatingPlatform1Mesh.Render();
+            FloatingPlatform2Mesh.Render();
+            FloatingPlatform3Mesh.Render();
         }
 
         public void Dispose()
@@ -229,6 +329,10 @@ namespace TGC.Group.Model.Utils
             DynamicPlatform1Body.Dispose();
             DynamicPlatform2Body.Dispose();
             DynamicPlatform3Body.Dispose();
+            DynamicPlatform4Body.Dispose();
+            FloatingPlatform1Body.Dispose();
+            FloatingPlatform2Body.Dispose();
+            FloatingPlatform3Body.Dispose();
             #endregion
 
             #region Dispose Meshes
@@ -240,7 +344,12 @@ namespace TGC.Group.Model.Utils
             DynamicPlatform1Mesh.Dispose();
             DynamicPlatform2Mesh.Dispose();
             DynamicPlatform3Mesh.Dispose();
+            DynamicPlatform4Mesh.Dispose();
+            FloatingPlatform1Mesh.Dispose();
+            FloatingPlatform2Mesh.Dispose();
+            FloatingPlatform3Mesh.Dispose();
             #endregion
+
 
             #region Dispose Physics world
             dynamicsWorld.Dispose();
@@ -258,33 +367,33 @@ namespace TGC.Group.Model.Utils
                 DynamicPlatform1Body.ActivationState = ActivationState.ActiveTag;
                 DynamicPlatform2Body.ActivationState = ActivationState.ActiveTag;
                 DynamicPlatform3Body.ActivationState = ActivationState.ActiveTag;
+                DynamicPlatform4Body.ActivationState = ActivationState.ActiveTag;
 
                 frecuency++;
-                        DynamicPlatform1Body.LinearVelocity = new Vector3(10 * direction, 0, 0);
+
+                DynamicPlatform1Body.LinearVelocity = new Vector3(10 * direction, 0, 0);
                     
 
                 if (frecuency < 1500)
                 {
                     DynamicPlatform2Body.LinearVelocity = new Vector3(0, 0, -10 * direction);
                     DynamicPlatform3Body.LinearVelocity = new Vector3(0, -3 * direction, -10 * direction);
+
+                    DynamicPlatform4Body.LinearVelocity = new Vector3(0, -3 * direction, 0);
                 }
                 else
                 {
                     DynamicPlatform2Body.LinearVelocity = new Vector3(0, 2 * direction, 0);
                     DynamicPlatform3Body.LinearVelocity = new Vector3(0, 3 * direction, -10 * direction);
+
+                    DynamicPlatform4Body.LinearVelocity = new Vector3(0, 3 * direction, 0);
                 }
-                if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform1Body.CenterOfMassPosition.Y + 22.5f)
-                {
-                    DynamicPlatform1Body.LinearVelocity += new Vector3(0, risingImpulse, 0);
-                }
-                if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform2Body.CenterOfMassPosition.Y + 22.5f)
-                {
-                    DynamicPlatform2Body.LinearVelocity += new Vector3(0, risingImpulse, 0);
-                }
-                if (BandicootRigidBody.CenterOfMassPosition.Y == DynamicPlatform3Body.CenterOfMassPosition.Y + 22.5f)
-                {
-                    DynamicPlatform3Body.LinearVelocity += new Vector3(0, risingImpulse, 0);
-                }
+
+                CollideWithPlatform(DynamicPlatform1Body, BandicootRigidBody);
+                CollideWithPlatform(DynamicPlatform2Body, BandicootRigidBody);
+                CollideWithPlatform(DynamicPlatform3Body, BandicootRigidBody);
+                CollideWithPlatform(DynamicPlatform4Body, BandicootRigidBody);
+
             }
             else
             {
@@ -299,9 +408,23 @@ namespace TGC.Group.Model.Utils
             DynamicPlatform1Mesh.Transform = new TGCMatrix(DynamicPlatform1Body.InterpolationWorldTransform);
             DynamicPlatform2Mesh.Transform = new TGCMatrix(DynamicPlatform2Body.InterpolationWorldTransform);
             DynamicPlatform3Mesh.Transform = new TGCMatrix(DynamicPlatform3Body.InterpolationWorldTransform);
+            DynamicPlatform4Mesh.Transform = new TGCMatrix(DynamicPlatform4Body.InterpolationWorldTransform);
             
 
 
         }
+
+        public void CollideWithPlatform(RigidBody platform, RigidBody bandicoot)
+        {
+            if (bandicoot.CenterOfMassPosition.Y == platform.CenterOfMassPosition.Y + 22.5f)
+                platform.LinearVelocity += new Vector3(0, risingImpulse, 0);
+        }
+
+        private void CollideWithFloatingPlatform(RigidBody floatingPlatform, RigidBody bandicoot)
+        {
+            if (bandicoot.CenterOfMassPosition.Y == floatingPlatform.CenterOfMassPosition.Y + 32.5f)
+                floatingPlatform.LinearVelocity += new Vector3(0, risingImpulse + 0.05f, 0);
+        }
+
     }
 }
